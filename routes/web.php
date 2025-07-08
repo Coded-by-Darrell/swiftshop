@@ -35,7 +35,6 @@ Route::post('/contact', function() {
     return 'Contact form submitted successfully!';
 })->name('contact.store');
 
-
 //Customer Routes (Protected)
 Route::middleware(['auth'])->group(function () {
 

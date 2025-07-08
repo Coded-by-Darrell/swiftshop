@@ -1,0 +1,161 @@
+/* SwiftShop Brand Variables */
+:root {
+    --primary-blue: #0C5CE6;
+    --gradient-bg: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --dark-gray: #343a40;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Base Styles */
+body {
+    font-family: var(--font-family);
+    line-height: 1.6;
+}
+
+/* Custom Buttons */
+.btn-primary-custom {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: var(--white);
+}
+
+.btn-primary-custom:hover {
+    background-color: #0A4BC7;
+    border-color: #0A4BC7;
+    color: var(--white);
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 70vh;
+    background: linear-gradient(rgba(30, 60, 114, 0.7), rgba(42, 82, 152, 0.7)), 
+                url('../images/guest/bg-hero.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.hero-content {
+    padding: 60px 0;
+}
+
+.hero-title {
+    font-size: 4.5rem;  /* Made bigger */
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    font-weight: 400;
+    opacity: 0.95;
+}
+
+.hero-buttons .btn {
+    padding: 12px 30px;
+    font-weight: 500;  /* Medium weight, not bold */
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+/* Simple hover effects - no movement or shadow */
+.hero-buttons .btn-dark:hover {
+    background-color: #000;  /* Just darker on hover */
+}
+
+.hero-buttons .btn-outline-light:hover {
+    background-color: white;  /* White fill on hover */
+    color: #1e3c72;  /* Dark text for contrast */
+    border-color: white;
+}
+
+/* About - Section */
+.section-header {
+    font-size: 53px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 1.5rem;
+}
+
+.section-subtitle {
+    font-size: 23px;
+    font-weight: normal;
+    color: #403E3E;
+    line-height: 1.4;
+    margin-bottom: 2rem;
+}
+
+/* cards */
+.card-body h5{
+    margin-bottom: 0px;
+}
+
+.position{
+    color: gray 100;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 60vh;
+    }
+    
+    .hero-title {
+        font-size: 3rem;  /* Bigger on mobile too */
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .hero-content {
+        padding: 40px 0;
+        text-align: center;
+    }
+    
+    .hero-buttons .btn {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .button-start{
+        padding-bottom: 15px;  /* Space between buttons */
+        margin-right: 0;      /* Remove right margin on mobile */
+    }
+
+    .section-header {
+        font-size: 42px;  /* Smaller on tablet */
+    }
+    
+    .section-subtitle {
+        font-size: 24px;  /* Smaller on tablet */
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 2.5rem;  /* Even bigger than before */
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .hero-buttons .btn {
+        padding: 8px 16px;   /* Even smaller on small phones */
+        font-size: 0.85rem;  /* Smaller text */
+        
+    }
+
+    .section-header {
+        font-size: 28px;  /* Even smaller on mobile */
+    }
+    
+    .section-subtitle {
+        font-size: 16px;  /* Even smaller on mobile */
+    }
+}
