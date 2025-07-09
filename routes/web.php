@@ -4,7 +4,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VendorProductController;
+use App\Http\Controllers\BrowseController;
 use Illuminate\Support\Facades\Route;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('homepage');
@@ -37,11 +39,8 @@ Route::post('/contact', function() {
 
 //Customer Routes (Protected)
 Route::middleware(['auth'])->group(function () {
+    Route::get('/browse', [BrowseController::class, 'index'])->name('browse');
 
-    Route::get('/dashboard', function() {
-        return 'Customer Dashboard - Login Required';
-    })->name('customer.dashboard');
-    
     Route::get('/cart', function() {
         return 'Shopping Cart - Login Required';
     })->name('cart.index');
@@ -85,6 +84,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     })->name('users.index');
 });
 
+
+//for testing only
+Route::get('/test-browse', [BrowseController::class, 'index'])->name('test.browse');
 
 
 
