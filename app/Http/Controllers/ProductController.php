@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    
     public function index(){
         // TODO: Fetch all products from database
         // TODO: Add search and filtering functionality
@@ -20,12 +21,25 @@ class ProductController extends Controller
         return "Category: " . $category;
     }
 
-    public function show($id){
-        // TODO: Find specific product by ID from database
-        // TODO: Handle product not found error
-        // TODO: Get product images and reviews
-        // TODO: Get seller information
-        // TODO: Get related/recommended products
-        return "Product: " . $id;
+    public function show($id)
+    {
+
+        $userAccount = [
+            'firstName' => 'Darrell',
+            'lastName' => 'Ocampo',
+            'fullName' => 'Darrell Ocampo'
+        ];
+        // Find the product by ID
+        $product = Product::find($id);
+        
+        // If product doesn't exist, show 404
+        if (!$product) {
+            abort(404);
+        }
+        
+        // Return view with product data
+        return view('show', compact('product', 'userAccount'));
     }
+
+    
 }

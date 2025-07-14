@@ -323,6 +323,49 @@
     color: white !important;
 }
 
+* Footer */
+/* Footer Updates */
+.footer-section .text-white {
+    color: #ffffff !important;
+}
+
+
+.footer-links a {
+    color: #ffffff !important;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 400 !important;  /* Regular weight */
+    font-size: 0.85rem !important; 
+}
+
+.footer-links a:hover {
+    color: var(--primary-blue) !important;
+}
+
+.newsletter-form .btn-primary-custom {
+    background-color: var(--primary-blue) !important;
+    border-color: var(--primary-blue) !important;
+    color: white !important;
+}
+
+.newsletter-form .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.newsletter-form .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.social-links a {
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--primary-blue) !important;
+}
+
 /* ===================================
    RESPONSIVE STYLES
    =================================== */
@@ -476,6 +519,8 @@
     .btn-cart-icon i {
         font-size: 0.9rem;
     }
+
+    
 }
 
 /* Extra Small Mobile */

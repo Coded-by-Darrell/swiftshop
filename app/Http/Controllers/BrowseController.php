@@ -3,110 +3,89 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Vendor;
 
 class BrowseController extends Controller
 {
-   public function index(){
-        $userName = 'Darrell C. Ocampo';
+    public function index()
+    {
+        $userAccount = [
+            'firstName' => 'Darrell',
+            'lastName' => 'Ocampo',
+            'fullName' => 'Darrell Ocampo'
+        ];
 
-        $specialDeals = [
-            [
-                'name' => 'Wireless Headphones',
-                'price' => '79.99',
-                'old_price' => '99.99',
-                'badge' => '20% off', 
-                'rating' => 4.5,
-                'store' => 'Audio Store'
-            ],
-            [
-                'name' => 'Smart Watch',
-                'price' => '199.99',
-                'old_price' => '249.99',
-                'badge' => '20% off',
-                'rating' => 4.7,
-                'store' => 'Tech Hub'
-            ],
-            [
-                'name' => 'Gaming Mouse',
-                'price' => '39.99',
-                'old_price' => '59.99',
-                'badge' => '33% OFF',
-                'rating' => 4.6,
-                'store' => 'Gaming World'
-            ],
-            [
-                'name' => 'USB-C Cable',
-                'price' => '12.99',
-                'old_price' => '19.99',
-                'badge' => '35% OFF',
-                'rating' => 4.5,
-                'store' => 'Cable Store'
-            ]
-        ];
-        
-        // New Releases products
-        $newReleases = [
-            [
-                'name' => 'iPhone 15 Case',
-                'price' => '29.99',
-                'badge' => 'New',
-                'rating' => 4.8,
-                'store' => 'Apple Store'
-            ],
-            [
-                'name' => 'Mechanical Keyboard',
-                'price' => '129.99',
-                'badge' => 'New',
-                'rating' => 4.9,
-                'store' => 'Tech Hub'
-            ],
-            [
-                'name' => '4K Webcam',
-                'price' => '89.99',
-                'badge' => 'New',
-                'rating' => 4.5,
-                'store' => 'Camera Pro'
-            ],
-            [
-                'name' => 'Wireless Charger',
-                'price' => '34.99',
-                'badge' => 'New',
-                'rating' => 4.4,
-                'store' => 'Power Tech'
-            ],
-         
-        ];
-        
-        // Electronics products
-        $electronics = [
-            [
-                'name' => 'MacBook Pro',
-                'price' => '1999.99',
-                'rating' => 4.9,
-                'store' => 'Apple Store'
-            ],
-            [
-                'name' => 'iPad Air',
-                'price' => '599.99',
-                'rating' => 4.8,
-                'store' => 'Apple Store'
-            ],
-            [
-                'name' => 'AirPods Pro',
-                'price' => '249.99',
-                'rating' => 4.7,
-                'store' => 'Apple Store'
-            ],
-            [
-                'name' => 'Samsung Galaxy S24',
-                'price' => '899.99',
-                'rating' => 4.6,
-                'store' => 'Samsung Store'
-            ],
-            
-        ];
-        
-        return view('browse.index', compact('userName', 'specialDeals', 'newReleases', 'electronics'));
+        // Get products for Special Deals (first 4 products)
+        $specialDeals = Product::with('vendor', 'category')
+            ->where('status', 'active')
+            ->limit(4)
+            ->get();
+
+        // Get products for New Releases (next 4 products)
+        $newReleases = Product::with('vendor', 'category')
+            ->where('status', 'active')
+            ->offset(4)
+            ->limit(4)
+            ->get();
+
+        // Get Electronics products
+        $electronics = Product::with('vendor', 'category')
+            ->where('category_id', 1) // Electronics category ID
+            ->where('status', 'active')
+            ->limit(5)
+            ->get();
+
+        // Get Fashion products
+        $fashionProducts = Product::with('vendor', 'category')
+            ->where('category_id', 2) // Fashion category ID
+            ->where('status', 'active')
+            ->limit(4)
+            ->get();
+
+        // Get Home & Garden products
+        $homeGardenProducts = Product::with('vendor', 'category')
+            ->where('category_id', 3) // Home & Garden category ID
+            ->where('status', 'active')
+            ->limit(4)
+            ->get();
+
+        // Get Gaming products
+        $gamingProducts = Product::with('vendor', 'category')
+            ->where('category_id', 4) // Gaming category ID
+            ->where('status', 'active')
+            ->limit(4)
+            ->get();
+
+        // Get Photography products
+        $photographyProducts = Product::with('vendor', 'category')
+            ->where('category_id', 5) // Photography category ID
+            ->where('status', 'active')
+            ->limit(4)
+            ->get();
+
+        // Get Audio products
+        $audioProducts = Product::with('vendor', 'category')
+            ->where('category_id', 6) // Audio category ID
+            ->where('status', 'active')
+            ->limit(4)
+            ->get();
+
+        // Get all categories for navigation
+        $categories = Category::all();
+
+        return view('browse.index', compact(
+            'userAccount',
+            'specialDeals',
+            'newReleases', 
+            'electronics',
+            'fashionProducts',
+            'homeGardenProducts',
+            'gamingProducts',
+            'photographyProducts',
+            'audioProducts',
+            'categories'
+        ));
     }
 }
-

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->decimal('price', 8, 2);
             $table->integer('stock_quantity');
-            $table->json('images');
+            $table->json('images')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
