@@ -60,9 +60,11 @@
                 <!-- Price Section -->
                 <div class="price-section mb-4">
                     <div class="d-flex align-items-center gap-3">
-                        <span class="current-price text-primary fw-bold fs-2">₱{{ number_format($product->price, 2) }}</span>
-                        <span class="original-price text-muted text-decoration-line-through">₱349.99</span>
-                        <span class="discount-badge bg-danger text-white px-2 py-1 rounded">14% OFF</span>
+                        <span class="current-price text-primary fw-bold fs-2">₱{{ number_format($product->getDisplayPrice(), 2) }}</span>
+                        @if($product->hasActiveDiscount())
+                            <span class="original-price text-muted text-decoration-line-through">₱{{ number_format($product->getOriginalPrice(), 2) }}</span>
+                            <span class="discount-badge bg-danger text-white px-2 py-1 rounded">{{ $product->getDiscountPercentage() }}% OFF</span>
+                        @endif
                     </div>
                 </div>
 

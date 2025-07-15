@@ -29,15 +29,14 @@
                 <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
                     <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
                         <div class="product-card">
-                            <!-- Product Image -->
+                            <!-- Product Image with Badge -->
                             <div class="product-image">
-                                @if(isset($product['badge']))
+                                @if($product['badge'])
                                     <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
                                 @endif
                                 <button class="wishlist-btn">
                                     <i class="far fa-heart"></i>
                                 </button>
-                                <!-- Placeholder for product image -->
                                 <i class="fas fa-image fa-3x text-muted"></i>
                             </div>
                             
@@ -66,9 +65,9 @@
                                 
                                 <!-- Pricing -->
                                 <div class="product-pricing">
-                                    <span class="current-price">₱{{ $product['price'] }}</span>
-                                    @if(isset($product['old_price']))
-                                        <span class="old-price">₱{{ $product['old_price'] }}</span>
+                                    <span class="current-price">₱{{ number_format($product['price'], 2) }}</span>
+                                    @if($product['old_price'])
+                                        <span class="old-price">₱{{ number_format($product['old_price'], 2) }}</span>
                                     @endif
                                 </div>
                                 
@@ -103,13 +102,12 @@
                     <div class="product-card">
                         <!-- Product Image -->
                         <div class="product-image">
-                            @if(isset($product['badge']))
-                                <span class="product-badge badge-new">{{ $product['badge'] }}</span>
+                            @if($product['badge'])
+                                <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
                             @endif
                             <button class="wishlist-btn">
                                 <i class="far fa-heart"></i>
                             </button>
-                            <!-- Placeholder for product image -->
                             <i class="fas fa-image fa-3x text-muted"></i>
                         </div>
                         
@@ -170,10 +168,12 @@
                     <div class="product-card">
                         <!-- Product Image -->
                         <div class="product-image">
+                            @if($product['badge'])
+                                <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
+                            @endif
                             <button class="wishlist-btn">
                                 <i class="far fa-heart"></i>
                             </button>
-                            <!-- Placeholder for product image -->
                             <i class="fas fa-image fa-3x text-muted"></i>
                         </div>
                         
@@ -235,13 +235,12 @@
                         <div class="product-card">
                             <!-- Product Image -->
                             <div class="product-image">
-                                @if(isset($product['badge']))
+                                @if($product['badge'])
                                     <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
                                 @endif
                                 <button class="wishlist-btn">
                                     <i class="far fa-heart"></i>
                                 </button>
-                                <!-- Placeholder for product image -->
                                 <i class="fas fa-image fa-3x text-muted"></i>
                             </div>
                             
@@ -304,14 +303,13 @@
                     <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
                         <div class="product-card">
                             <!-- Product Image -->
-                            <div class="product-image">
-                                @if(isset($product['badge']))
+                              <div class="product-image">
+                                @if($product['badge'])
                                     <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
                                 @endif
                                 <button class="wishlist-btn">
                                     <i class="far fa-heart"></i>
                                 </button>
-                                <!-- Placeholder for product image -->
                                 <i class="fas fa-image fa-3x text-muted"></i>
                             </div>
                             
@@ -375,13 +373,12 @@
                         <div class="product-card">
                             <!-- Product Image -->
                             <div class="product-image">
-                                @if(isset($product['badge']))
+                                @if($product['badge'])
                                     <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
                                 @endif
                                 <button class="wishlist-btn">
                                     <i class="far fa-heart"></i>
                                 </button>
-                                <!-- Placeholder for product image -->
                                 <i class="fas fa-image fa-3x text-muted"></i>
                             </div>
                             
@@ -445,13 +442,12 @@
                         <div class="product-card">
                             <!-- Product Image -->
                             <div class="product-image">
-                                @if(isset($product['badge']))
+                                @if($product['badge'])
                                     <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
                                 @endif
                                 <button class="wishlist-btn">
                                     <i class="far fa-heart"></i>
                                 </button>
-                                <!-- Placeholder for product image -->
                                 <i class="fas fa-image fa-3x text-muted"></i>
                             </div>
                             
@@ -515,13 +511,12 @@
                         <div class="product-card">
                             <!-- Product Image -->
                             <div class="product-image">
-                                @if(isset($product['badge']))
+                                @if($product['badge'])
                                     <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
                                 @endif
                                 <button class="wishlist-btn">
                                     <i class="far fa-heart"></i>
                                 </button>
-                                <!-- Placeholder for product image -->
                                 <i class="fas fa-image fa-3x text-muted"></i>
                             </div>
                             

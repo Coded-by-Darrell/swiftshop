@@ -56,6 +56,32 @@ class ProductVariantSeeder extends Seeder
                 ];
                 break;
 
+                case 'USB-C Cable':
+                    $variants = [
+                        [
+                            'sku' => 'USBC-007-BLK',
+                            'original_price' => 12.99,
+                            'sale_price' => 9.99,
+                            'is_on_sale' => true,
+                            'sale_start_date' => Carbon::now()->subDays(2),
+                            'sale_end_date' => Carbon::now()->addDays(12),
+                            'stock_quantity' => 50,
+                            'is_default' => true,
+                            'attributes' => ['Black']
+                        ],
+                        [
+                            'sku' => 'USBC-007-WHT',
+                            'original_price' => 12.99,
+                            'sale_price' => 9.99,
+                            'is_on_sale' => true,
+                            'sale_start_date' => Carbon::now()->subDays(2),
+                            'sale_end_date' => Carbon::now()->addDays(12),
+                            'stock_quantity' => 50,
+                            'attributes' => ['White']
+                        ]
+                    ];
+                    break;
+
             case 'Smart Watch':
                 $variants = [
                     [

@@ -22,24 +22,29 @@ class ProductController extends Controller
     }
 
     public function show($id)
-    {
+{
+    $userAccount = [
+        'firstName' => 'Darrell',
+        'lastName' => 'Ocampo',
+        'fullName' => 'Darrell Ocampo'
+    ];
 
-        $userAccount = [
-            'firstName' => 'Darrell',
-            'lastName' => 'Ocampo',
-            'fullName' => 'Darrell Ocampo'
-        ];
-        // Find the product by ID
-        $product = Product::find($id);
-        
-        // If product doesn't exist, show 404
-        if (!$product) {
-            abort(404);
-        }
-        
-        // Return view with product data
-        return view('show', compact('product', 'userAccount'));
+    // Find the product by ID with all variant relationships
+    $product = Product::with([
+        'vendor', 
+        'category', 
+        'variants.attributeValues.attribute',
+        'defaultVariant.attributeValues.attribute'
+    ])->find($id);
+    
+    // If product doesn't exist, show 404
+    if (!$product) {
+        abort(404);
     }
+    
+    // Return view with product data
+    return view('show', compact('product', 'userAccount'));
+}
 
     
 }
