@@ -45,4 +45,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Add these methods to your existing User model
+    public function productReviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function vendorReviews()
+    {
+        return $this->hasMany(VendorReview::class);
+    }
 }

@@ -145,4 +145,27 @@ class Product extends Model
             $variant->onSale();
         });
     }
+
+        // Add this method to your existing Product model
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(ProductReview::class)->where('is_approved', true);
+    }
+
+    // Helper method to get average rating
+    public function averageRating()
+    {
+        return $this->approvedReviews()->avg('rating') ?? 0;
+    }
+
+    // Helper method to get total reviews count
+    public function reviewsCount()
+    {
+        return $this->approvedReviews()->count();
+    }
 }

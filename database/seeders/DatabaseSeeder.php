@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             ProductAttributeSeeder::class,        // FIFTH - create attributes (Color, Size, etc.)
             ProductAttributeValueSeeder::class,   // SIXTH - create attribute values (Red, Blue, Large, etc.)
             ProductVariantSeeder::class,          // SEVENTH - create product variants with attributes
+            ReviewSeeder::class,                  // EIGHTH - create reviews (needs users and products)
         ]);
     }
 }
