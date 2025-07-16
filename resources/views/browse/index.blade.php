@@ -27,18 +27,17 @@
             <div class="row g-3">
                 @foreach($specialDeals as $product)
                 <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
-                    <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
                         <div class="product-card">
-                            <!-- Product Image with Badge -->
-                            <div class="product-image">
-                                @if($product['badge'])
-                                    <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
-                                @endif
-                                <button class="wishlist-btn">
-                                    <i class="far fa-heart"></i>
-                                </button>
-                                <i class="fas fa-image fa-3x text-muted"></i>
-                            </div>
+                            <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
+                                <!-- Product Image with Badge -->
+                                <div class="product-image">
+                                    @if($product['badge'])
+                                        <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
+                                    @endif
+                                    
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                            </a>
                             
                             <!-- Product Details -->
                             <div class="product-details">
@@ -47,18 +46,23 @@
                                 <!-- Rating -->
                                 <div class="product-rating">
                                     <div class="rating-stars">
+                                        @php
+                                            $rating = $product['rating'];
+                                            $fullStars = floor($rating);
+                                            $hasHalfStar = ($rating - $fullStars) >= 0.5;
+                                        @endphp
+                                        
                                         @for($i = 1; $i <= 5; $i++)
-                                            @if($i <= floor($product['rating']))
-                                                <i class="fas fa-star"></i>
-                                            @elseif($i - 0.5 <= $product['rating'])
-                                                <i class="fas fa-star-half-alt"></i>
+                                            @if($i <= $fullStars)
+                                                <i class="fas fa-star text-warning"></i>
+                                            @elseif($i == $fullStars + 1 && $hasHalfStar)
+                                                <i class="fas fa-star-half-alt text-warning"></i>
                                             @else
-                                                <i class="far fa-star"></i>
+                                                <i class="far fa-star text-warning"></i>
                                             @endif
                                         @endfor
                                     </div>
-                                    <span class="rating-count">({{ rand(100, 999) }})</span>
-                                </div>
+                                    <span class="rating-count">({{ $product['reviewsCount'] }})</span>                                </div>
                                 
                                 <!-- Store -->
                                 <p class="product-store">{{ $product['store'] }}</p>
@@ -80,8 +84,6 @@
                                 </div>
                             </div>
                         </div>
-                    </a>
-                    
                 </div>
                 @endforeach
             </div>
@@ -98,18 +100,18 @@
             
             <div class="row g-3">
                 @foreach($newReleases as $product)
-                <div class="col-12 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
+                <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
                     <div class="product-card">
-                        <!-- Product Image -->
-                        <div class="product-image">
-                            @if($product['badge'])
-                                <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
-                            @endif
-                            <button class="wishlist-btn">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <i class="fas fa-image fa-3x text-muted"></i>
-                        </div>
+                        <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
+                            <!-- Product Image with Badge -->
+                            <div class="product-image">
+                                @if($product['badge'])
+                                    <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
+                                @endif
+                                
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                            </div>
+                        </a>
                         
                         <!-- Product Details -->
                         <div class="product-details">
@@ -118,25 +120,33 @@
                             <!-- Rating -->
                             <div class="product-rating">
                                 <div class="rating-stars">
+                                    @php
+                                        $rating = $product['rating'];
+                                        $fullStars = floor($rating);
+                                        $hasHalfStar = ($rating - $fullStars) >= 0.5;
+                                    @endphp
+                                    
                                     @for($i = 1; $i <= 5; $i++)
-                                        @if($i <= floor($product['rating']))
-                                            <i class="fas fa-star"></i>
-                                        @elseif($i - 0.5 <= $product['rating'])
-                                            <i class="fas fa-star-half-alt"></i>
+                                        @if($i <= $fullStars)
+                                            <i class="fas fa-star text-warning"></i>
+                                        @elseif($i == $fullStars + 1 && $hasHalfStar)
+                                            <i class="fas fa-star-half-alt text-warning"></i>
                                         @else
-                                            <i class="far fa-star"></i>
+                                            <i class="far fa-star text-warning"></i>
                                         @endif
                                     @endfor
                                 </div>
-                                <span class="rating-count">({{ rand(50, 500) }})</span>
-                            </div>
+                                <span class="rating-count">({{ $product['reviewsCount'] }})</span>                            </div>
                             
                             <!-- Store -->
                             <p class="product-store">{{ $product['store'] }}</p>
                             
                             <!-- Pricing -->
                             <div class="product-pricing">
-                                <span class="current-price">₱{{ $product['price'] }}</span>
+                                <span class="current-price">₱{{ number_format($product['price'], 2) }}</span>
+                                @if($product['old_price'])
+                                    <span class="old-price">₱{{ number_format($product['old_price'], 2) }}</span>
+                                @endif
                             </div>
                             
                             <!-- Action Buttons -->
@@ -148,10 +158,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                @endforeach
             </div>
+            @endforeach
         </div>
+    </div>
     </section>
 
     <!-- Electronics Section -->
@@ -164,18 +174,18 @@
             
             <div class="row g-3">
                 @foreach($electronics as $product)
-                <div class="col-12 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
+                <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
                     <div class="product-card">
-                        <!-- Product Image -->
-                        <div class="product-image">
-                            @if($product['badge'])
-                                <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
-                            @endif
-                            <button class="wishlist-btn">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <i class="fas fa-image fa-3x text-muted"></i>
-                        </div>
+                        <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
+                            <!-- Product Image with Badge -->
+                            <div class="product-image">
+                                @if($product['badge'])
+                                    <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
+                                @endif
+                                
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                            </div>
+                        </a>
                         
                         <!-- Product Details -->
                         <div class="product-details">
@@ -184,25 +194,33 @@
                             <!-- Rating -->
                             <div class="product-rating">
                                 <div class="rating-stars">
+                                    @php
+                                        $rating = $product['rating'];
+                                        $fullStars = floor($rating);
+                                        $hasHalfStar = ($rating - $fullStars) >= 0.5;
+                                    @endphp
+                                    
                                     @for($i = 1; $i <= 5; $i++)
-                                        @if($i <= floor($product['rating']))
-                                            <i class="fas fa-star"></i>
-                                        @elseif($i - 0.5 <= $product['rating'])
-                                            <i class="fas fa-star-half-alt"></i>
+                                        @if($i <= $fullStars)
+                                            <i class="fas fa-star text-warning"></i>
+                                        @elseif($i == $fullStars + 1 && $hasHalfStar)
+                                            <i class="fas fa-star-half-alt text-warning"></i>
                                         @else
-                                            <i class="far fa-star"></i>
+                                            <i class="far fa-star text-warning"></i>
                                         @endif
                                     @endfor
                                 </div>
-                                <span class="rating-count">({{ rand(200, 800) }})</span>
-                            </div>
+                                <span class="rating-count">({{ $product['reviewsCount'] }})</span>                            </div>
                             
                             <!-- Store -->
                             <p class="product-store">{{ $product['store'] }}</p>
                             
                             <!-- Pricing -->
                             <div class="product-pricing">
-                                <span class="current-price">₱{{ $product['price'] }}</span>
+                                <span class="current-price">₱{{ number_format($product['price'], 2) }}</span>
+                                @if($product['old_price'])
+                                    <span class="old-price">₱{{ number_format($product['old_price'], 2) }}</span>
+                                @endif
                             </div>
                             
                             <!-- Action Buttons -->
@@ -214,12 +232,12 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                @endforeach
             </div>
+            @endforeach
         </div>
+    </div>
     </section>
-</div>
+
 
         <!-- Fashion Category -->
         <section class="product-section">
@@ -233,16 +251,16 @@
                     @foreach($fashionProducts as $product)
                     <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
                         <div class="product-card">
-                            <!-- Product Image -->
-                            <div class="product-image">
-                                @if($product['badge'])
-                                    <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
-                                @endif
-                                <button class="wishlist-btn">
-                                    <i class="far fa-heart"></i>
-                                </button>
-                                <i class="fas fa-image fa-3x text-muted"></i>
-                            </div>
+                            <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
+                                <!-- Product Image with Badge -->
+                                <div class="product-image">
+                                    @if($product['badge'])
+                                        <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
+                                    @endif
+                                    
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                            </a>
                             
                             <!-- Product Details -->
                             <div class="product-details">
@@ -251,27 +269,32 @@
                                 <!-- Rating -->
                                 <div class="product-rating">
                                     <div class="rating-stars">
+                                        @php
+                                            $rating = $product['rating'];
+                                            $fullStars = floor($rating);
+                                            $hasHalfStar = ($rating - $fullStars) >= 0.5;
+                                        @endphp
+                                        
                                         @for($i = 1; $i <= 5; $i++)
-                                            @if($i <= floor($product['rating']))
-                                                <i class="fas fa-star"></i>
-                                            @elseif($i - 0.5 <= $product['rating'])
-                                                <i class="fas fa-star-half-alt"></i>
+                                            @if($i <= $fullStars)
+                                                <i class="fas fa-star text-warning"></i>
+                                            @elseif($i == $fullStars + 1 && $hasHalfStar)
+                                                <i class="fas fa-star-half-alt text-warning"></i>
                                             @else
-                                                <i class="far fa-star"></i>
+                                                <i class="far fa-star text-warning"></i>
                                             @endif
                                         @endfor
                                     </div>
-                                    <span class="rating-count">({{ rand(100, 999) }})</span>
-                                </div>
+                                    <span class="rating-count">({{ $product['reviewsCount'] }})</span>                                </div>
                                 
                                 <!-- Store -->
                                 <p class="product-store">{{ $product['store'] }}</p>
                                 
                                 <!-- Pricing -->
                                 <div class="product-pricing">
-                                    <span class="current-price">₱{{ $product['price'] }}</span>
-                                    @if(isset($product['old_price']))
-                                        <span class="old-price">₱{{ $product['old_price'] }}</span>
+                                    <span class="current-price">₱{{ number_format($product['price'], 2) }}</span>
+                                    @if($product['old_price'])
+                                        <span class="old-price">₱{{ number_format($product['old_price'], 2) }}</span>
                                     @endif
                                 </div>
                                 
@@ -284,10 +307,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    @endforeach
                 </div>
+                @endforeach
             </div>
+        </div>
         </section>
 
         <!-- Home and Garden Category -->
@@ -302,16 +325,16 @@
                     @foreach($homeGardenProducts as $product)
                     <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
                         <div class="product-card">
-                            <!-- Product Image -->
-                              <div class="product-image">
-                                @if($product['badge'])
-                                    <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
-                                @endif
-                                <button class="wishlist-btn">
-                                    <i class="far fa-heart"></i>
-                                </button>
-                                <i class="fas fa-image fa-3x text-muted"></i>
-                            </div>
+                            <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
+                                <!-- Product Image with Badge -->
+                                <div class="product-image">
+                                    @if($product['badge'])
+                                        <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
+                                    @endif
+                                    
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                            </a>
                             
                             <!-- Product Details -->
                             <div class="product-details">
@@ -320,27 +343,32 @@
                                 <!-- Rating -->
                                 <div class="product-rating">
                                     <div class="rating-stars">
+                                        @php
+                                            $rating = $product['rating'];
+                                            $fullStars = floor($rating);
+                                            $hasHalfStar = ($rating - $fullStars) >= 0.5;
+                                        @endphp
+                                        
                                         @for($i = 1; $i <= 5; $i++)
-                                            @if($i <= floor($product['rating']))
-                                                <i class="fas fa-star"></i>
-                                            @elseif($i - 0.5 <= $product['rating'])
-                                                <i class="fas fa-star-half-alt"></i>
+                                            @if($i <= $fullStars)
+                                                <i class="fas fa-star text-warning"></i>
+                                            @elseif($i == $fullStars + 1 && $hasHalfStar)
+                                                <i class="fas fa-star-half-alt text-warning"></i>
                                             @else
-                                                <i class="far fa-star"></i>
+                                                <i class="far fa-star text-warning"></i>
                                             @endif
                                         @endfor
                                     </div>
-                                    <span class="rating-count">({{ rand(100, 999) }})</span>
-                                </div>
+                                    <span class="rating-count">({{ $product['reviewsCount'] }})</span>                                </div>
                                 
                                 <!-- Store -->
                                 <p class="product-store">{{ $product['store'] }}</p>
                                 
                                 <!-- Pricing -->
                                 <div class="product-pricing">
-                                    <span class="current-price">₱{{ $product['price'] }}</span>
-                                    @if(isset($product['old_price']))
-                                        <span class="old-price">₱{{ $product['old_price'] }}</span>
+                                    <span class="current-price">₱{{ number_format($product['price'], 2) }}</span>
+                                    @if($product['old_price'])
+                                        <span class="old-price">₱{{ number_format($product['old_price'], 2) }}</span>
                                     @endif
                                 </div>
                                 
@@ -353,10 +381,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    @endforeach
                 </div>
+                @endforeach
             </div>
+        </div>
         </section>
 
         <!-- Gaming Category -->
@@ -371,16 +399,16 @@
                     @foreach($gamingProducts as $product)
                     <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
                         <div class="product-card">
-                            <!-- Product Image -->
-                            <div class="product-image">
-                                @if($product['badge'])
-                                    <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
-                                @endif
-                                <button class="wishlist-btn">
-                                    <i class="far fa-heart"></i>
-                                </button>
-                                <i class="fas fa-image fa-3x text-muted"></i>
-                            </div>
+                            <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
+                                <!-- Product Image with Badge -->
+                                <div class="product-image">
+                                    @if($product['badge'])
+                                        <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
+                                    @endif
+                                    
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                            </a>
                             
                             <!-- Product Details -->
                             <div class="product-details">
@@ -389,27 +417,33 @@
                                 <!-- Rating -->
                                 <div class="product-rating">
                                     <div class="rating-stars">
+                                        @php
+                                            $rating = $product['rating'];
+                                            $fullStars = floor($rating);
+                                            $hasHalfStar = ($rating - $fullStars) >= 0.5;
+                                        @endphp
+                                        
                                         @for($i = 1; $i <= 5; $i++)
-                                            @if($i <= floor($product['rating']))
-                                                <i class="fas fa-star"></i>
-                                            @elseif($i - 0.5 <= $product['rating'])
-                                                <i class="fas fa-star-half-alt"></i>
+                                            @if($i <= $fullStars)
+                                                <i class="fas fa-star text-warning"></i>
+                                            @elseif($i == $fullStars + 1 && $hasHalfStar)
+                                                <i class="fas fa-star-half-alt text-warning"></i>
                                             @else
-                                                <i class="far fa-star"></i>
+                                                <i class="far fa-star text-warning"></i>
                                             @endif
                                         @endfor
                                     </div>
-                                    <span class="rating-count">({{ rand(100, 999) }})</span>
-                                </div>
+                                    <span class="rating-count">({{ $product['reviewsCount'] }})</span>
+                                                                </div>
                                 
                                 <!-- Store -->
                                 <p class="product-store">{{ $product['store'] }}</p>
                                 
                                 <!-- Pricing -->
                                 <div class="product-pricing">
-                                    <span class="current-price">₱{{ $product['price'] }}</span>
-                                    @if(isset($product['old_price']))
-                                        <span class="old-price">₱{{ $product['old_price'] }}</span>
+                                    <span class="current-price">₱{{ number_format($product['price'], 2) }}</span>
+                                    @if($product['old_price'])
+                                        <span class="old-price">₱{{ number_format($product['old_price'], 2) }}</span>
                                     @endif
                                 </div>
                                 
@@ -422,79 +456,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    @endforeach
                 </div>
+                @endforeach
             </div>
-        </section>
-
-        <!-- Photography Category -->
-        <section class="product-section">
-            <div class="container">
-                <div class="section-header d-flex justify-content-between align-items-center">
-                    <h2 class="section-title">Photography</h2>
-                    <a href="#" class="view-more-btn">View More</a>
-                </div>
-                
-                <div class="row g-3">
-                    @foreach($photographyProducts as $product)
-                    <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
-                        <div class="product-card">
-                            <!-- Product Image -->
-                            <div class="product-image">
-                                @if($product['badge'])
-                                    <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
-                                @endif
-                                <button class="wishlist-btn">
-                                    <i class="far fa-heart"></i>
-                                </button>
-                                <i class="fas fa-image fa-3x text-muted"></i>
-                            </div>
-                            
-                            <!-- Product Details -->
-                            <div class="product-details">
-                                <h3 class="product-name">{{ $product['name'] }}</h3>
-                                
-                                <!-- Rating -->
-                                <div class="product-rating">
-                                    <div class="rating-stars">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            @if($i <= floor($product['rating']))
-                                                <i class="fas fa-star"></i>
-                                            @elseif($i - 0.5 <= $product['rating'])
-                                                <i class="fas fa-star-half-alt"></i>
-                                            @else
-                                                <i class="far fa-star"></i>
-                                            @endif
-                                        @endfor
-                                    </div>
-                                    <span class="rating-count">({{ rand(100, 999) }})</span>
-                                </div>
-                                
-                                <!-- Store -->
-                                <p class="product-store">{{ $product['store'] }}</p>
-                                
-                                <!-- Pricing -->
-                                <div class="product-pricing">
-                                    <span class="current-price">₱{{ $product['price'] }}</span>
-                                    @if(isset($product['old_price']))
-                                        <span class="old-price">₱{{ $product['old_price'] }}</span>
-                                    @endif
-                                </div>
-                                
-                                <!-- Action Buttons -->
-                                <div class="product-actions">
-                                    <button class="btn btn-buy-now">Buy Now</button>
-                                    <button class="btn btn-cart-icon" title="Add to Cart">
-                                        <i class="fas fa-shopping-cart"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
+        </div>
         </section>
 
         <!-- Audio Category -->
@@ -509,16 +474,16 @@
                     @foreach($audioProducts as $product)
                     <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
                         <div class="product-card">
-                            <!-- Product Image -->
-                            <div class="product-image">
-                                @if($product['badge'])
-                                    <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
-                                @endif
-                                <button class="wishlist-btn">
-                                    <i class="far fa-heart"></i>
-                                </button>
-                                <i class="fas fa-image fa-3x text-muted"></i>
-                            </div>
+                            <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
+                                <!-- Product Image with Badge -->
+                                <div class="product-image">
+                                    @if($product['badge'])
+                                        <span class="product-badge badge-sale">{{ $product['badge'] }}</span>
+                                    @endif
+                                    
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                            </a>
                             
                             <!-- Product Details -->
                             <div class="product-details">
@@ -527,27 +492,33 @@
                                 <!-- Rating -->
                                 <div class="product-rating">
                                     <div class="rating-stars">
+                                        @php
+                                            $rating = $product['rating'];
+                                            $fullStars = floor($rating);
+                                            $hasHalfStar = ($rating - $fullStars) >= 0.5;
+                                        @endphp
+                                        
                                         @for($i = 1; $i <= 5; $i++)
-                                            @if($i <= floor($product['rating']))
-                                                <i class="fas fa-star"></i>
-                                            @elseif($i - 0.5 <= $product['rating'])
-                                                <i class="fas fa-star-half-alt"></i>
+                                            @if($i <= $fullStars)
+                                                <i class="fas fa-star text-warning"></i>
+                                            @elseif($i == $fullStars + 1 && $hasHalfStar)
+                                                <i class="fas fa-star-half-alt text-warning"></i>
                                             @else
-                                                <i class="far fa-star"></i>
+                                                <i class="far fa-star text-warning"></i>
                                             @endif
                                         @endfor
                                     </div>
-                                    <span class="rating-count">({{ rand(100, 999) }})</span>
-                                </div>
+                                    <span class="rating-count">({{ $product['reviewsCount'] }})</span>
+                                                                </div>
                                 
                                 <!-- Store -->
                                 <p class="product-store">{{ $product['store'] }}</p>
                                 
                                 <!-- Pricing -->
                                 <div class="product-pricing">
-                                    <span class="current-price">₱{{ $product['price'] }}</span>
-                                    @if(isset($product['old_price']))
-                                        <span class="old-price">₱{{ $product['old_price'] }}</span>
+                                    <span class="current-price">₱{{ number_format($product['price'], 2) }}</span>
+                                    @if($product['old_price'])
+                                        <span class="old-price">₱{{ number_format($product['old_price'], 2) }}</span>
                                     @endif
                                 </div>
                                 
@@ -560,11 +531,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    @endforeach
                 </div>
+                @endforeach
             </div>
+        </div>
         </section>
-
+</div>
 @endsection
 

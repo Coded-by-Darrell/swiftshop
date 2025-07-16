@@ -421,3 +421,4 @@ function showNotification(message, type = 'info') {
 document.addEventListener('DOMContentLoaded', function() {
     updateQuantityDisplay();
 });
+

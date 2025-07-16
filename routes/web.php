@@ -89,5 +89,3 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::get('/test-browse', [BrowseController::class, 'index'])->name('test.browse');
 
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('test.product');
-
-

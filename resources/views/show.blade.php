@@ -45,15 +45,25 @@
                 <!-- Rating and Reviews -->
                 <div class="rating-section mb-3">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="rating-number">4.8</span>
+                        <span class="rating-number">{{ number_format($product->averageRating(), 1) }}</span>
                         <div class="stars">
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star-half-alt text-warning"></i>
+                            @php
+                                $rating = $product->averageRating();
+                                $fullStars = floor($rating);
+                                $hasHalfStar = ($rating - $fullStars) >= 0.5;
+                            @endphp
+                            
+                            @for($i = 1; $i <= 5; $i++)
+                                @if($i <= $fullStars)
+                                    <i class="fas fa-star text-warning"></i>
+                                @elseif($i == $fullStars + 1 && $hasHalfStar)
+                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                @else
+                                    <i class="far fa-star text-warning"></i>
+                                @endif
+                            @endfor
                         </div>
-                        <a href="#reviews-section" class="review-count text-muted text-decoration-underline">(2,847 reviews)</a>
+                        <a href="#reviews-section" class="review-count text-muted text-decoration-underline">({{ $product->reviewsCount() }} reviews)</a>
                     </div>
                 </div>
 
@@ -180,37 +190,37 @@
                                 <h6>Description</h6>
                                 <p>{{ $product->description ?: 'Experience industry-leading noise cancellation with the Sony WH-1000XM4 headphones. These premium wireless headphones deliver exceptional sound quality with 30-hour battery life, quick charge functionality, and smart listening features that adapt to your environment.' }}</p>
                                 
-                                <h6 class="mt-4">Specifications</h6>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="spec-item">
-                                            <strong>Brand:</strong> <span>Sony</span>
+                                    <h6 class="mt-4">Specifications</h6>
+                                    @if($product->specifications && $product->specifications->count() > 0)
+                                        <div class="row">
+                                            @php
+                                                $specs = $product->specifications;
+                                                $halfCount = ceil($specs->count() / 2);
+                                                $leftSpecs = $specs->take($halfCount);
+                                                $rightSpecs = $specs->skip($halfCount);
+                                            @endphp
+                                            
+                                            <div class="col-md-6">
+                                                @foreach($leftSpecs as $spec)
+                                                <div class="spec-item mb-2">
+                                                    <strong>{{ $spec->spec_name }}:</strong> <span>{{ $spec->spec_value }}</span>
+                                                </div>
+                                                @endforeach
+                                            </div>
+                                            
+                                            @if($rightSpecs->count() > 0)
+                                            <div class="col-md-6">
+                                                @foreach($rightSpecs as $spec)
+                                                <div class="spec-item mb-2">
+                                                    <strong>{{ $spec->spec_name }}:</strong> <span>{{ $spec->spec_value }}</span>
+                                                </div>
+                                                @endforeach
+                                            </div>
+                                            @endif
                                         </div>
-                                        <div class="spec-item">
-                                            <strong>Model:</strong> <span>WH-1000XM4</span>
-                                        </div>
-                                        <div class="spec-item">
-                                            <strong>Type:</strong> <span>Over-ear</span>
-                                        </div>
-                                        <div class="spec-item">
-                                            <strong>Battery Life:</strong> <span>30 hours</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="spec-item">
-                                            <strong>Connectivity:</strong> <span>Bluetooth 5.0, 3.5mm</span>
-                                        </div>
-                                        <div class="spec-item">
-                                            <strong>Weight:</strong> <span>254g</span>
-                                        </div>
-                                        <div class="spec-item">
-                                            <strong>Noise Cancellation:</strong> <span>Active</span>
-                                        </div>
-                                        <div class="spec-item">
-                                            <strong>Warranty:</strong> <span>1 Year</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                    @else
+                                        <p class="text-muted">No specifications available for this product.</p>
+                                    @endif
                             </div>
                             <div class="tab-pane fade" id="shipping">
                                 <h6>Shipping Information</h6>
@@ -227,154 +237,88 @@
         </div>
     </div>
 
-    <!-- Reviews Section -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="reviews-card">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Customer Reviews</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="reviews-section" id="reviews-section">
-                            <!-- Review Summary -->
-                            <div class="review-summary mb-4">
-                                <div class="row align-items-center">
-                                    <div class="col-md-4">
-                                        <div class="text-center">
-                                            <div class="avg-rating display-4 fw-bold text-primary">4.8</div>
-                                            <div class="stars mb-2">
-                                                <i class="fas fa-star text-warning"></i>
-                                                <i class="fas fa-star text-warning"></i>
-                                                <i class="fas fa-star text-warning"></i>
-                                                <i class="fas fa-star text-warning"></i>
-                                                <i class="fas fa-star-half-alt text-warning"></i>
-                                            </div>
-                                            <div class="text-muted">Based on 2,847 reviews</div>
+                        <!-- Reviews Section -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="reviews-card">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Customer Reviews</h5>
                                         </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="rating-breakdown">
-                                            <div class="rating-bar d-flex align-items-center mb-1">
-                                                <span class="me-2">5★</span>
-                                                <div class="progress flex-grow-1 me-2">
-                                                    <div class="progress-bar bg-warning" style="width: 70%"></div>
-                                                </div>
-                                                <span class="text-muted">70%</span>
-                                            </div>
-                                            <div class="rating-bar d-flex align-items-center mb-1">
-                                                <span class="me-2">4★</span>
-                                                <div class="progress flex-grow-1 me-2">
-                                                    <div class="progress-bar bg-warning" style="width: 20%"></div>
-                                                </div>
-                                                <span class="text-muted">20%</span>
-                                            </div>
-                                            <div class="rating-bar d-flex align-items-center mb-1">
-                                                <span class="me-2">3★</span>
-                                                <div class="progress flex-grow-1 me-2">
-                                                    <div class="progress-bar bg-warning" style="width: 7%"></div>
-                                                </div>
-                                                <span class="text-muted">7%</span>
-                                            </div>
-                                            <div class="rating-bar d-flex align-items-center mb-1">
-                                                <span class="me-2">2★</span>
-                                                <div class="progress flex-grow-1 me-2">
-                                                    <div class="progress-bar bg-warning" style="width: 2%"></div>
-                                                </div>
-                                                <span class="text-muted">2%</span>
-                                            </div>
-                                            <div class="rating-bar d-flex align-items-center">
-                                                <span class="me-2">1★</span>
-                                                <div class="progress flex-grow-1 me-2">
-                                                    <div class="progress-bar bg-warning" style="width: 1%"></div>
-                                                </div>
-                                                <span class="text-muted">1%</span>
-                                            </div>
+                                        <div class="card-body">
+                                            <div class="reviews-section" id="reviews-section">
+                                                <!-- Review Summary -->
+                        <div class="review-summary mb-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-4">
+                                    <div class="text-center">
+                                        <div class="avg-rating display-4 fw-bold text-primary">{{ number_format($product->averageRating(), 1) }}</div>
+                                        <div class="stars mb-2">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                @if($i <= floor($product->averageRating()))
+                                                    <i class="fas fa-star text-warning"></i>
+                                                @elseif($i - 0.5 <= $product->averageRating())
+                                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                                @else
+                                                    <i class="far fa-star text-warning"></i>
+                                                @endif
+                                            @endfor
                                         </div>
+                                        <div class="text-muted">Based on {{ $product->reviewsCount() }} reviews</div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Individual Reviews -->
-                            <div class="reviews-list">
-                                <div class="review-item mb-4 pb-3 border-bottom">
-                                    <div class="d-flex mb-2">
-                                        <img src="{{ asset('images/placeholder-avatar.jpg') }}" alt="User" class="rounded-circle me-3" width="40" height="40">
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-start">
-                                                <div>
-                                                    <h6 class="mb-1">Maria Santos</h6>
-                                                    <div class="stars mb-1">
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        <i class="fas fa-star text-warning"></i>
-                                                    </div>
-                                                </div>
-                                                <small class="text-muted">2 days ago</small>
-                                            </div>
-                                            <p class="mb-0">Excellent sound quality and noise cancellation! The battery life is amazing and they're very comfortable for long listening sessions. Highly recommended!</p>
-                                        </div>
-                                    </div>
+                                <div class="col-md-8">
+                                    <!-- Keep existing rating breakdown for now -->
                                 </div>
-
-                                <div class="review-item mb-4 pb-3 border-bottom">
-                                    <div class="d-flex mb-2">
-                                        <img src="{{ asset('images/placeholder-avatar.jpg') }}" alt="User" class="rounded-circle me-3" width="40" height="40">
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-start">
-                                                <div>
-                                                    <h6 class="mb-1">John Dela Cruz</h6>
-                                                    <div class="stars mb-1">
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        <i class="far fa-star text-warning"></i>
-                                                    </div>
-                                                </div>
-                                                <small class="text-muted">1 week ago</small>
-                                            </div>
-                                            <p class="mb-0">Great headphones overall. The noise cancellation works perfectly and the build quality is top-notch. Only minor issue is they can get a bit warm during extended use.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="review-item mb-4 pb-3 border-bottom">
-                                    <div class="d-flex mb-2">
-                                        <img src="{{ asset('images/placeholder-avatar.jpg') }}" alt="User" class="rounded-circle me-3" width="40" height="40">
-                                        <div class="flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-start">
-                                                <div>
-                                                    <h6 class="mb-1">Lisa Rodriguez</h6>
-                                                    <div class="stars mb-1">
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        <i class="fas fa-star text-warning"></i>
-                                                    </div>
-                                                </div>
-                                                <small class="text-muted">2 weeks ago</small>
-                                            </div>
-                                            <p class="mb-0">Perfect for working from home! The noise cancellation helps me focus, and the sound quality for music and calls is exceptional. Worth every peso!</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Load More Reviews Button -->
-                            <div class="text-center">
-                                <button class="btn btn-outline-primary">Load More Reviews</button>
                             </div>
                         </div>
+
+                        <!-- Real Individual Reviews -->
+                        <div class="reviews-list">
+                            @foreach($product->approvedReviews()->with('user')->latest()->take(5)->get() as $review)
+                            <div class="review-item mb-4 pb-3 border-bottom">
+                                <div class="d-flex mb-2">
+                                    <img src="{{ asset('images/placeholder-avatar.jpg') }}" alt="User" class="rounded-circle me-3" width="40" height="40">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1">{{ $review->user->name }}</h6>
+                                                <div class="stars mb-1">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        @if($i <= $review->rating)
+                                                            <i class="fas fa-star text-warning"></i>
+                                                        @else
+                                                            <i class="far fa-star text-warning"></i>
+                                                        @endif
+                                                    @endfor
+                                                </div>
+                                                @if($review->verified_purchase)
+                                                    <small class="text-success">✓ Verified Purchase</small>
+                                                @endif
+                                            </div>
+                                            <small class="text-muted">{{ $review->created_at->diffForHumans() }}</small>
+                                        </div>
+                                        <h6 class="mt-2 mb-1">{{ $review->title }}</h6>
+                                        <p class="mb-0">{{ $review->content }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
+                        @if($product->reviewsCount() > 5)
+                        <div class="text-center">
+                            <button class="btn btn-outline-primary" id="loadMoreReviews" onclick="loadMoreReviews()">Load More Reviews</button>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 
 
 <!-- Include Product Detail Specific JavaScript -->

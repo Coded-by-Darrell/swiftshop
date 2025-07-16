@@ -25,25 +25,25 @@ class Vendor extends Model
     }
 
     // Add this method to your existing Vendor model
-public function reviews()
-{
-    return $this->hasMany(VendorReview::class);
-}
+    public function reviews()
+    {
+        return $this->hasMany(VendorReview::class);
+    }
 
-public function approvedReviews()
-{
-    return $this->hasMany(VendorReview::class)->where('is_approved', true);
-}
+    public function approvedReviews()
+    {
+        return $this->hasMany(VendorReview::class)->where('is_approved', true);
+    }
 
-// Helper method to get average rating
-public function averageRating()
-{
-    return $this->approvedReviews()->avg('rating') ?? 0;
-}
+    // Helper method to get average rating
+    public function averageRating()
+    {
+        return $this->approvedReviews()->avg('rating') ?? 0;
+    }
 
-// Helper method to get total reviews count
-public function reviewsCount()
-{
-    return $this->approvedReviews()->count();
-}
+    // Helper method to get total reviews count
+    public function reviewsCount()
+    {
+        return $this->approvedReviews()->count();
+    }
 }

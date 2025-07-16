@@ -168,4 +168,12 @@ class Product extends Model
     {
         return $this->approvedReviews()->count();
     }
+
+    // Add this method to your existing Product model
+    public function specifications()
+    {
+        return $this->hasMany(ProductSpecification::class)->ordered();
+    }
+
+    
 }
