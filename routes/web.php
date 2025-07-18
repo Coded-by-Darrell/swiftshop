@@ -88,4 +88,5 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 /// Test routes for category functionality
 Route::get('/test-browse', [BrowseController::class, 'index'])->name('test.browse');
 Route::get('/category/{categorySlug}', [BrowseController::class, 'category'])->name('category.show');
-Route::get('/product/{id}', [ProductController::class, 'show'])->name('test.product');
+Route::get('/test-product/{id}', [ProductController::class, 'show'])->name('test.product'); // Changed this
+Route::get('/search', [BrowseController::class, 'search'])->name('search');

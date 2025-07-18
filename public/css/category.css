@@ -526,6 +526,48 @@
     .current-price {
         font-size: 1rem;
     }
+
+    .filter-sidebar.collapse:not(.show) {
+        display: none !important;
+    }
+    
+    .filter-sidebar.collapse.show {
+        display: block !important;
+    }
+    
+    /* Search page mobile sort styling */
+    .search-header .sort-section select {
+        width: 100%;
+    }
+
+    .category-header {
+        padding: 1rem;
+        text-align: center; /* Force center alignment on mobile */
+    }
+    
+    /* Fix mobile layout - force vertical centering */
+    .category-header .d-flex {
+        flex-direction: column !important;
+        text-align: center !important;
+        align-items: center !important;
+    }
+    
+    .category-icon {
+        margin: 0 auto 1rem auto !important; /* Center icon with bottom margin */
+    }
+    
+    .category-title {
+        font-size: 1.5rem;
+        text-align: center !important;
+    }
+    
+    .category-description {
+        text-align: center !important;
+    }
+    
+    .results-count {
+        text-align: center !important;
+    }
 }
 
 /* ===================================

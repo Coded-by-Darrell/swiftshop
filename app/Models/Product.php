@@ -175,5 +175,15 @@ class Product extends Model
         return $this->hasMany(ProductSpecification::class)->ordered();
     }
 
+    public function displayPrice()
+    {
+        return $this->getDisplayPrice();
+    }
+
+    public function discountedPrice()
+    {
+        return $this->getDisplayPrice(); // Since this already handles discounts via variants
+    }
+
     
 }

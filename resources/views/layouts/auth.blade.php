@@ -20,18 +20,21 @@
                 <!-- Always visible, responsive layout -->
                 <div class="d-flex align-items-center justify-content-between w-100">
                     <!-- Logo -->
-                    <a class="navbar-brand" href="{{ url('/browse') }}">
+                    <!-- Update the logo link -->
+                    <a class="navbar-brand" href="{{ route('test.browse') }}">
                         <img src="{{ asset('images/logo.png')}}" alt="SwiftShop" width="60px" height="60px">
                     </a>
                     
                     <!-- Search Bar (HIDDEN ON MOBILE) -->
                     <div class="mx-3 flex-grow-1 d-none d-sm-block" style="max-width: 500px;">
-                        <div class="input-group browse-search-bar">
-                            <input type="text" class="form-control" placeholder="Search for products, brands, and more...">
-                            <button class="btn btn-primary-custom" type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
+                        <form method="GET" action="{{ route('search') }}">
+                            <div class="input-group browse-search-bar">
+                                <input type="text" name="q" class="form-control" placeholder="Search for products, brands, and more..." value="{{ request('q') }}">
+                                <button class="btn btn-primary-custom" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
                     </div>
                     
                     <!-- Right Icons -->
@@ -65,15 +68,18 @@
         <div class="mobile-search-section d-sm-none">
             <div class="container">
                 <div class="mobile-search-bar">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search products...">
-                        <button class="btn btn-primary-custom" type="button">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
+                    <form method="GET" action="{{ route('search') }}">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Search products..." value="{{ request('q') }}">
+                            <button class="btn btn-primary-custom" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+        
 
 
         <!-- Main content area -->

@@ -36,7 +36,14 @@
     <div class="row">
         <!-- Filter Sidebar -->
         <div class="col-lg-3 col-md-4 mb-4">
-            <div class="filter-sidebar">
+            <!-- Mobile Filter Toggle -->
+            <div class="d-md-none mb-3">
+                <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filterSidebar">
+                    <i class="fas fa-filter me-2"></i>Filters
+                </button>
+            </div>
+
+            <div class="filter-sidebar collapse d-md-block" id="filterSidebar">
                 <div class="filter-header">
                     <h5 class="filter-title">Filter Products</h5>
                 </div>

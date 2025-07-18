@@ -307,5 +307,89 @@ public function category($categorySlug, Request $request)
     return view('category', compact('category', 'products', 'subcategories', 'brands', 'userAccount'));
 }
 
+public function search(Request $request)
+{
+    $query = $request->input('q');
+    $category = $request->input('category');
+    $vendor = $request->input('vendor');
+    $minPrice = $request->input('min_price');
+    $maxPrice = $request->input('max_price');
+    $sortBy = $request->input('sort', 'name'); // default sort by name
+
+    // Start building the query
+    $productsQuery = Product::with(['vendor', 'category', 'variants.attributeValues.attribute']);
+
+    // Search by name or description
+    if ($query) {
+        $productsQuery->where(function($q) use ($query) {
+            $q->where('name', 'LIKE', "%{$query}%")
+              ->orWhere('description', 'LIKE', "%{$query}%");
+        });
+    }
+
+    // Filter by category
+    if ($category) {
+        $productsQuery->where('category_id', $category);
+    }
+
+    // Filter by vendor
+    if ($vendor) {
+        $productsQuery->where('vendor_id', $vendor);
+    }
+
+    // Filter by price range
+    if ($minPrice) {
+        $productsQuery->where(function($q) use ($minPrice) {
+            $q->where('price', '>=', $minPrice)
+              ->orWhereHas('variants', function($variant) use ($minPrice) {
+                  $variant->where('price', '>=', $minPrice);
+              });
+        });
+    }
+
+    if ($maxPrice) {
+        $productsQuery->where(function($q) use ($maxPrice) {
+            $q->where('price', '<=', $maxPrice)
+              ->orWhereHas('variants', function($variant) use ($maxPrice) {
+                  $variant->where('price', '<=', $maxPrice);
+              });
+        });
+    }
+
+    // Sorting
+    switch ($sortBy) {
+        case 'price_low':
+            $productsQuery->orderBy('price', 'asc');
+            break;
+        case 'price_high':
+            $productsQuery->orderBy('price', 'desc');
+            break;
+        case 'newest':
+            $productsQuery->orderBy('created_at', 'desc');
+            break;
+        case 'rating':
+            $productsQuery->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'desc');
+            break;
+        default:
+            $productsQuery->orderBy('name', 'asc');
+    }
+
+    $products = $productsQuery->paginate(12);
+
+    // Get data for filters
+    $categories = Category::all();
+    $vendors = Vendor::all();
+
+    $userAccount = [
+        'firstName' => 'Darrell',
+        'lastName' => 'Ocampo',
+        'fullName' => 'Darrell Ocampo'
+    ];
+
+    
+
+    return view('search', compact('products', 'categories', 'vendors', 'query', 'category', 'vendor', 'minPrice', 'maxPrice', 'sortBy','userAccount'));
+}
+
 
 }
