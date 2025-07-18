@@ -196,102 +196,116 @@ class BrowseController extends Controller
             ));
         }
 
-    // Add this method to your BrowseController.php
+// Add this method to your BrowseController.php
 
-        public function category($categorySlug, Request $request)
-            {
-
-                
-
-                // Find the category by slug
-                $category = Category::where('slug', $categorySlug)->firstOrFail();
-                
-                // Start building the query for products in this category
-                $query = Product::with(['vendor', 'category', 'defaultVariant.attributeValues'])
-                    ->where('category_id', $category->id)
-                    ->where('status', 'active');
-                
-                // Apply price filter if provided
-                if ($request->has('min_price') && $request->min_price !== null) {
-                    $query->whereHas('variants', function($q) use ($request) {
-                        $q->where('sale_price', '>=', $request->min_price)
-                        ->orWhere(function($subQ) use ($request) {
-                            $subQ->whereNull('sale_price')
-                                ->where('original_price', '>=', $request->min_price);
-                        });
+public function category($categorySlug, Request $request)
+{
+    // Find the category by slug
+    $category = Category::where('slug', $categorySlug)->firstOrFail();
+    
+    // Start building the query for products in this category
+    $query = Product::with(['vendor', 'category', 'defaultVariant.attributeValues'])
+        ->where('category_id', $category->id)
+        ->where('status', 'active');
+    
+    // Apply price filter if provided
+    if ($request->has('min_price') && $request->min_price !== null && $request->min_price !== '') {
+        $minPrice = (float) $request->min_price;
+        $query->where(function($q) use ($minPrice) {
+            // Check variants first (for products with variants)
+            $q->whereHas('variants', function($variantQuery) use ($minPrice) {
+                $variantQuery->where(function($priceQuery) use ($minPrice) {
+                    // Check sale price first, then original price
+                    $priceQuery->where(function($saleQuery) use ($minPrice) {
+                        $saleQuery->whereNotNull('sale_price')
+                                  ->where('sale_price', '>=', $minPrice);
+                    })->orWhere(function($originalQuery) use ($minPrice) {
+                        $originalQuery->whereNull('sale_price')
+                                      ->where('original_price', '>=', $minPrice);
                     });
-                }
-                
-                if ($request->has('max_price') && $request->max_price !== null) {
-                    $query->whereHas('variants', function($q) use ($request) {
-                        $q->where('sale_price', '<=', $request->max_price)
-                        ->orWhere(function($subQ) use ($request) {
-                            $subQ->whereNull('sale_price')
-                                ->where('original_price', '<=', $request->max_price);
-                        });
+                });
+            })->orWhere(function($baseQuery) use ($minPrice) {
+                // For products without variants, check base price
+                $baseQuery->whereDoesntHave('variants')
+                          ->where('price', '>=', $minPrice);
+            });
+        });
+    }
+    
+    if ($request->has('max_price') && $request->max_price !== null && $request->max_price !== '') {
+        $maxPrice = (float) $request->max_price;
+        $query->where(function($q) use ($maxPrice) {
+            // Check variants first (for products with variants)
+            $q->whereHas('variants', function($variantQuery) use ($maxPrice) {
+                $variantQuery->where(function($priceQuery) use ($maxPrice) {
+                    // Check sale price first, then original price
+                    $priceQuery->where(function($saleQuery) use ($maxPrice) {
+                        $saleQuery->whereNotNull('sale_price')
+                                  ->where('sale_price', '<=', $maxPrice);
+                    })->orWhere(function($originalQuery) use ($maxPrice) {
+                        $originalQuery->whereNull('sale_price')
+                                      ->where('original_price', '<=', $maxPrice);
                     });
-                }
-                
-                // Apply rating filter if provided
-                if ($request->has('rating') && is_array($request->rating)) {
-                    $ratings = $request->rating;
-                    $query->whereHas('reviews', function($q) use ($ratings) {
-                        $q->whereIn('rating', $ratings);
-                    });
-                }
-                
-                // Apply brand filter if provided
-                if ($request->has('brands') && is_array($request->brands)) {
-                    $brands = $request->brands;
-                    $query->whereHas('vendor', function($q) use ($brands) {
-                        $q->whereIn('business_name', $brands);
-                    });
-                }
-                
-                // Get paginated products
-                $products = $query->paginate(12)->appends($request->query());
-                
-                // Get subcategories for this category (using product names for now since we don't have subcategories table)
-                $subcategories = Product::where('category_id', $category->id)
-                    ->where('status', 'active')
-                    ->pluck('name')
-                    ->map(function($name) {
-                        // Extract type from product name (e.g., "iPhone 15 Pro" -> "Smartphones")
-                        if (str_contains(strtolower($name), 'iphone') || str_contains(strtolower($name), 'samsung galaxy')) {
-                            return 'Smartphones & Tablets';
-                        } elseif (str_contains(strtolower($name), 'macbook') || str_contains(strtolower($name), 'laptop')) {
-                            return 'Laptops & Computers';
-                        } elseif (str_contains(strtolower($name), 'headphone') || str_contains(strtolower($name), 'earphone')) {
-                            return 'Audio & Headphones';
-                        } elseif (str_contains(strtolower($name), 'gaming') || str_contains(strtolower($name), 'mouse')) {
-                            return 'Gaming & Accessories';
-                        } elseif (str_contains(strtolower($name), 'camera') || str_contains(strtolower($name), 'lens')) {
-                            return 'Cameras & Photography';
-                        } else {
-                            return 'Smart Home';
-                        }
-                    })
-                    ->unique()
-                    ->values();
-                
-                // Get unique brands from vendors in this category
-                $brands = Product::where('category_id', $category->id)
-                    ->where('status', 'active')
-                    ->with('vendor')
-                    ->get()
-                    ->pluck('vendor.business_name')
-                    ->unique()
-                    ->values();
-
-                    $userAccount = [
-                        'firstName' => 'Darrell',
-                        'lastName' => 'Ocampo',
-                        'fullName' => 'Darrell Ocampo'
-                    ];
-                
-                return view('category', compact('category', 'products', 'subcategories', 'brands', 'userAccount'));
+                });
+            })->orWhere(function($baseQuery) use ($maxPrice) {
+                // For products without variants, check base price
+                $baseQuery->whereDoesntHave('variants')
+                          ->where('price', '<=', $maxPrice);
+            });
+        });
+    }
+    
+    // Apply brand filter if provided (vendor business names)
+    if ($request->has('brands') && is_array($request->brands) && !empty($request->brands)) {
+        $query->whereHas('vendor', function($q) use ($request) {
+            $q->whereIn('business_name', $request->brands);
+        });
+    }
+    
+    // Get paginated products
+    $products = $query->paginate(12)->appends($request->query());
+    
+    // Get subcategories for this category (using product names for now since we don't have subcategories table)
+    $subcategories = Product::where('category_id', $category->id)
+        ->where('status', 'active')
+        ->pluck('name')
+        ->map(function($name) {
+            // Extract type from product name (e.g., "iPhone 15 Pro" -> "Smartphones")
+            if (str_contains(strtolower($name), 'iphone') || str_contains(strtolower($name), 'samsung galaxy')) {
+                return 'Smartphones & Tablets';
+            } elseif (str_contains(strtolower($name), 'macbook') || str_contains(strtolower($name), 'laptop')) {
+                return 'Laptops & Computers';
+            } elseif (str_contains(strtolower($name), 'headphone') || str_contains(strtolower($name), 'earphone')) {
+                return 'Audio & Headphones';
+            } elseif (str_contains(strtolower($name), 'gaming') || str_contains(strtolower($name), 'mouse')) {
+                return 'Gaming & Accessories';
+            } elseif (str_contains(strtolower($name), 'camera') || str_contains(strtolower($name), 'lens')) {
+                return 'Cameras & Photography';
+            } else {
+                return 'Smart Home';
             }
-
+        })
+        ->unique()
+        ->values();
+    
+    // Get unique brands from vendors in this category
+    $brands = Product::where('category_id', $category->id)
+        ->where('status', 'active')
+        ->with('vendor')
+        ->get()
+        ->pluck('vendor.business_name')
+        ->unique()
+        ->values();
+    
+    // User account data for the layout
+    $userAccount = [
+        'firstName' => 'Darrell',
+        'lastName' => 'Ocampo',
+        'fullName' => 'Darrell Ocampo'
+    ];
+    
+    return view('category', compact('category', 'products', 'subcategories', 'brands', 'userAccount'));
+}
 
 
 }
