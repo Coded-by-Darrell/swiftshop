@@ -85,7 +85,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 
-//for testing only
+/// Test routes for category functionality
 Route::get('/test-browse', [BrowseController::class, 'index'])->name('test.browse');
-
+Route::get('/category/{categorySlug}', [BrowseController::class, 'category'])->name('category.show');
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('test.product');
