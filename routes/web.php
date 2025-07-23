@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VendorProductController;
 use App\Http\Controllers\BrowseController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
@@ -90,3 +91,17 @@ Route::get('/test-browse', [BrowseController::class, 'index'])->name('test.brows
 Route::get('/category/{categorySlug}', [BrowseController::class, 'category'])->name('category.show');
 Route::get('/test-product/{id}', [ProductController::class, 'show'])->name('test.product'); // Changed this
 Route::get('/search', [BrowseController::class, 'search'])->name('search');
+/// Test Cart Routes (Public for development phase)
+Route::prefix('test-cart')->name('test.cart.')->group(function () {
+    // Cart display page
+    Route::get('/', [CartController::class, 'index'])->name('index');
+    
+    // Cart AJAX operations
+    Route::post('/add', [CartController::class, 'add'])->name('add');
+    Route::patch('/update', [CartController::class, 'update'])->name('update');
+    Route::delete('/remove', [CartController::class, 'remove'])->name('remove');
+    Route::delete('/clear', [CartController::class, 'clear'])->name('clear');
+    
+    // Get cart count for navbar badge
+    Route::get('/count', [CartController::class, 'getCartCount'])->name('count');
+});

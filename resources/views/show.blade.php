@@ -1,5 +1,9 @@
 @extends('layouts.auth')
 
+@push('scripts')
+<script src="{{ asset('js/cart.js') }}"></script>
+@endpush
+
 @section('content')
 <!-- Include Product Detail Specific Styles -->
 <link rel="stylesheet" href="{{ asset('css/show.css') }}">

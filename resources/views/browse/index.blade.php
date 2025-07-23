@@ -2,6 +2,7 @@
 
 @section('title', 'Browse - SwiftShop')
 
+
 @section('content')
 <div class="browse-page">
     <!-- Welcome Section -->
@@ -27,7 +28,7 @@
             <div class="row g-3">
                 @foreach($specialDeals as $product)
                 <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
-                        <div class="product-card">
+                    <div class="product-card" data-product-id="{{ $product['id'] }}">
                             <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
                                 <!-- Product Image with Badge -->
                                 <div class="product-image">
@@ -77,8 +78,8 @@
                                 
                                 <!-- Action Buttons -->
                                 <div class="product-actions">
-                                    <button class="btn btn-buy-now">Buy Now</button>
-                                    <button class="btn btn-cart-icon" title="Add to Cart">
+                                    <button class="btn btn-buy-now" data-product-id="{{ $product['id'] }}">Buy Now</button>
+                                    <button class="btn btn-cart-icon" data-product-id="{{ $product['id'] }}" title="Add to Cart">
                                         <i class="fas fa-shopping-cart"></i>
                                     </button>
                                 </div>
@@ -101,7 +102,7 @@
             <div class="row g-3">
                 @foreach($newReleases as $product)
                 <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
-                    <div class="product-card">
+                    <div class="product-card" data-product-id="{{ $product['id'] }}">
                         <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
                             <!-- Product Image with Badge -->
                             <div class="product-image">
@@ -151,10 +152,10 @@
                             
                             <!-- Action Buttons -->
                             <div class="product-actions">
-                                <button class="btn btn-buy-now">Buy Now</button>
-                                <button class="btn btn-cart-icon" title="Add to Cart">
+                                <button class="btn btn-buy-now" data-product-id="{{ $product['id'] }}">Buy Now</button>
+                                <button class="btn btn-cart-icon" data-product-id="{{ $product['id'] }}" title="Add to Cart">
                                     <i class="fas fa-shopping-cart"></i>
-                                </button>
+                                </button>   
                             </div>
                         </div>
                     </div>
@@ -175,7 +176,7 @@
             <div class="row g-3">
                 @foreach($electronics as $product)
                 <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
-                    <div class="product-card">
+                    <div class="product-card" data-product-id="{{ $product['id'] }}">
                         <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
                             <!-- Product Image with Badge -->
                             <div class="product-image">
@@ -225,10 +226,10 @@
                             
                             <!-- Action Buttons -->
                             <div class="product-actions">
-                                <button class="btn btn-buy-now">Buy Now</button>
-                                <button class="btn btn-cart-icon" title="Add to Cart">
+                                <button class="btn btn-buy-now" data-product-id="{{ $product['id'] }}">Buy Now</button>
+                                <button class="btn btn-cart-icon" data-product-id="{{ $product['id'] }}" title="Add to Cart">
                                     <i class="fas fa-shopping-cart"></i>
-                                </button>
+                                </button>   
                             </div>
                         </div>
                     </div>
@@ -250,7 +251,7 @@
                 <div class="row g-3">
                     @foreach($fashionProducts as $product)
                     <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
-                        <div class="product-card">
+                        <div class="product-card" data-product-id="{{ $product['id'] }}">
                             <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
                                 <!-- Product Image with Badge -->
                                 <div class="product-image">
@@ -300,10 +301,10 @@
                                 
                                 <!-- Action Buttons -->
                                 <div class="product-actions">
-                                    <button class="btn btn-buy-now">Buy Now</button>
-                                    <button class="btn btn-cart-icon" title="Add to Cart">
+                                    <button class="btn btn-buy-now" data-product-id="{{ $product['id'] }}">Buy Now</button>
+                                    <button class="btn btn-cart-icon" data-product-id="{{ $product['id'] }}" title="Add to Cart">
                                         <i class="fas fa-shopping-cart"></i>
-                                    </button>
+                                    </button>   
                                 </div>
                             </div>
                         </div>
@@ -324,7 +325,7 @@
                 <div class="row g-3">
                     @foreach($homeGardenProducts as $product)
                     <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
-                        <div class="product-card">
+                        <div class="product-card" data-product-id="{{ $product['id'] }}">
                             <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
                                 <!-- Product Image with Badge -->
                                 <div class="product-image">
@@ -374,10 +375,10 @@
                                 
                                 <!-- Action Buttons -->
                                 <div class="product-actions">
-                                    <button class="btn btn-buy-now">Buy Now</button>
-                                    <button class="btn btn-cart-icon" title="Add to Cart">
+                                    <button class="btn btn-buy-now" data-product-id="{{ $product['id'] }}">Buy Now</button>
+                                    <button class="btn btn-cart-icon" data-product-id="{{ $product['id'] }}" title="Add to Cart">
                                         <i class="fas fa-shopping-cart"></i>
-                                    </button>
+                                    </button>   
                                 </div>
                             </div>
                         </div>
@@ -398,7 +399,7 @@
                 <div class="row g-3">
                     @foreach($gamingProducts as $product)
                     <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
-                        <div class="product-card">
+                        <div class="product-card" data-product-id="{{ $product['id'] }}">
                             <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
                                 <!-- Product Image with Badge -->
                                 <div class="product-image">
@@ -449,10 +450,10 @@
                                 
                                 <!-- Action Buttons -->
                                 <div class="product-actions">
-                                    <button class="btn btn-buy-now">Buy Now</button>
-                                    <button class="btn btn-cart-icon" title="Add to Cart">
+                                    <button class="btn btn-buy-now" data-product-id="{{ $product['id'] }}">Buy Now</button>
+                                    <button class="btn btn-cart-icon" data-product-id="{{ $product['id'] }}" title="Add to Cart">
                                         <i class="fas fa-shopping-cart"></i>
-                                    </button>
+                                    </button>   
                                 </div>
                             </div>
                         </div>
@@ -473,7 +474,7 @@
                 <div class="row g-3">
                     @foreach($audioProducts as $product)
                     <div class="col-10 col-md-4 col-lg-3 col-xl-custom-5 mx-auto">
-                        <div class="product-card">
+                        <div class="product-card" data-product-id="{{ $product['id'] }}">
                             <a href="{{ route('test.product', $product['id'])}}" class="text-decoration-none">
                                 <!-- Product Image with Badge -->
                                 <div class="product-image">
@@ -524,10 +525,10 @@
                                 
                                 <!-- Action Buttons -->
                                 <div class="product-actions">
-                                    <button class="btn btn-buy-now">Buy Now</button>
-                                    <button class="btn btn-cart-icon" title="Add to Cart">
+                                    <button class="btn btn-buy-now" data-product-id="{{ $product['id'] }}">Buy Now</button>
+                                    <button class="btn btn-cart-icon" data-product-id="{{ $product['id'] }}" title="Add to Cart">
                                         <i class="fas fa-shopping-cart"></i>
-                                    </button>
+                                    </button>   
                                 </div>
                             </div>
                         </div>
@@ -540,4 +541,6 @@
 @endsection
 
 
-
+@push('scripts')
+<script src="{{ asset('js/cart.js') }}"></script>
+@endpush

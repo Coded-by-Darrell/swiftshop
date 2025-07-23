@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'SwiftShop - Swift. Simple. Everything.')</title>
     
     <!-- Add Bootstrap 5 CDN, CSS, and SwiftShop styling here -->
@@ -40,9 +41,9 @@
                     <!-- Right Icons -->
                     <div class="d-flex align-items-center gap-3">
                         <!-- Cart -->
-                        <a href="#" class="nav-link position-relative cart-icon">
+                        <a href="{{ route('test.cart.index') }}" class="nav-link position-relative cart-icon">
                             <i class="fas fa-shopping-cart fa-lg"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge">3</span>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge" style="display: none;">0</span>
                         </a>
                         
                         <!-- User Dropdown -->
@@ -166,6 +167,7 @@
     </div>
 </footer>
         <!-- Add Bootstrap JS CDN here -->
+        <script src="{{ asset('js/cart.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
 </html>

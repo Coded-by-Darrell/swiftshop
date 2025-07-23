@@ -1,6 +1,9 @@
 @extends('layouts.auth')
 
 @section('title', 'Search Results - SwiftShop')
+@push('scripts')
+<script src="{{ asset('js/cart.js') }}"></script>
+@endpush
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/category.css') }}">
@@ -61,7 +64,7 @@
                     <div class="row" id="productsList">
                         @foreach($products as $product)
                         <div class="col-lg-3 col-md-4 col-sm-6 mb-4 product-item">
-                            <div class="product-card">
+                            <div class="product-card" data-product-id="{{ $product['id'] }}">
                                 <a href="{{ route('test.product', $product->id) }}" class="text-decoration-none">
                                     <!-- Product Image with Badge -->
                                     <div class="product-image">
@@ -112,10 +115,10 @@
                                     
                                     <!-- Action Buttons -->
                                     <div class="product-actions">
-                                        <button class="btn btn-buy-now">Buy Now</button>
-                                        <button class="btn btn-cart-icon" title="Add to Cart">
+                                        <button class="btn btn-buy-now" data-product-id="{{ $product['id'] }}">Buy Now</button>
+                                        <button class="btn btn-cart-icon" data-product-id="{{ $product['id'] }}" title="Add to Cart">
                                             <i class="fas fa-shopping-cart"></i>
-                                        </button>
+                                        </button>   
                                     </div>
                                 </div>
                             </div>
