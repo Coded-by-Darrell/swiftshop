@@ -3,26 +3,28 @@
 @section('title', 'Secure Checkout - SwiftShop')
 
 @section('content')
-<div class="checkout-container">
+<!-- Checkout Header with Breadcrumbs - MOVED OUTSIDE -->
+<div class="checkout-header">
     <div class="container">
-        <!-- Checkout Header with Breadcrumbs -->
-        <div class="checkout-header">
-            <div class="row">
-                <div class="col-12">
-                    <!-- Breadcrumbs -->
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb checkout-breadcrumb mb-2">
-                            <li class="breadcrumb-item"><a href="{{ route('test.browse') }}">Home</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('test.cart.index') }}">Cart</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Checkout</li>
-                        </ol>
-                    </nav>
-                    <!-- Page Title -->
-                    <h1 class="checkout-title">Secure Checkout</h1>
-                </div>
+        <div class="row">
+            <div class="col-12">
+                <!-- Breadcrumbs -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb checkout-breadcrumb mb-2">
+                        <li class="breadcrumb-item"><a href="{{ route('test.browse') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('test.cart.index') }}">Cart</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                    </ol>
+                </nav>
+                <!-- Page Title -->
+                <h1 class="checkout-title">Secure Checkout</h1>
             </div>
         </div>
+    </div>
+</div>
 
+<div class="checkout-container">
+    <div class="container">
         <div class="row">
             <!-- Left Column: Checkout Form -->
             <div class="col-lg-8">
@@ -118,6 +120,7 @@
                                 </label>
                             </div>
                         </div>
+                    </div>
 
                     <!-- Shipping Method Section -->
                     <div class="checkout-form-section">
