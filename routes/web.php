@@ -6,6 +6,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VendorProductController;
 use App\Http\Controllers\BrowseController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
@@ -104,4 +105,21 @@ Route::prefix('test-cart')->name('test.cart.')->group(function () {
     
     // Get cart count for navbar badge
     Route::get('/count', [CartController::class, 'getCartCount'])->name('count');
+});
+
+/// Test Checkout Routes (Public for development phase)
+Route::prefix('test-checkout')->name('test.checkout.')->group(function () {
+    // Checkout page
+    Route::get('/', [CheckoutController::class, 'index'])->name('index');
+    
+    // Process checkout
+    Route::post('/place-order', [CheckoutController::class, 'store'])->name('store');
+    
+    // Order confirmation
+    Route::get('/confirmation', [CheckoutController::class, 'confirmation'])->name('confirmation');
+    
+    // Address management
+    Route::post('/save-address', [CheckoutController::class, 'saveAddress'])->name('save-address');
+    Route::get('/addresses', [CheckoutController::class, 'getAddresses'])->name('addresses');
+    Route::post('/update-shipping', [CheckoutController::class, 'updateShipping'])->name('update-shipping');
 });
