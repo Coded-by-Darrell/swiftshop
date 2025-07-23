@@ -384,4 +384,284 @@ async function placeOrder() {
     }
 }
 
+/**
+ * Missing functions to complete checkout.js functionality
+ * Add these functions to your existing public/js/checkout.js file
+ */
+
+/**
+ * Shipping Option Selection
+ */
+function selectShipping(method) {
+    // Remove selected class from all shipping options
+    document.querySelectorAll('.shipping-option').forEach(option => {
+        option.classList.remove('selected');
+        option.querySelector('input[type="radio"]').checked = false;
+    });
+    
+    // Add selected class to clicked option
+    const selectedOption = document.querySelector(`input[value="${method}"]`).closest('.shipping-option');
+    selectedOption.classList.add('selected');
+    selectedOption.querySelector('input[type="radio"]').checked = true;
+    
+    // Update shipping calculation
+    updateShippingMethod(method);
+}
+
+/**
+ * Validate Checkout Form
+ */
+function validateCheckoutForm() {
+    let isValid = true;
+    
+    // Check if address is selected or new address form is filled
+    const selectedAddress = document.querySelector('.address-option.selected input[type="radio"]:checked');
+    const newAddressVisible = document.getElementById('new-address-form').style.display !== 'none';
+    
+    if (!selectedAddress && !newAddressVisible) {
+        showNotification('error', 'Please select or add a delivery address');
+        return false;
+    }
+    
+    // If new address form is visible, validate it
+    if (newAddressVisible) {
+        const requiredFields = ['full_name', 'phone_number', 'contact_email', 'street_address', 'city', 'postal_code'];
+        
+        requiredFields.forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            if (field && !field.value.trim()) {
+                showFieldError(field, 'This field is required');
+                isValid = false;
+            }
+        });
+        
+        // Validate email format
+        const emailField = document.getElementById('contact_email');
+        if (emailField && emailField.value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(emailField.value)) {
+                showFieldError(emailField, 'Please enter a valid email address');
+                isValid = false;
+            }
+        }
+    }
+    
+    // Check shipping method selection
+    const selectedShipping = document.querySelector('input[name="shipping_method"]:checked');
+    if (!selectedShipping) {
+        showNotification('error', 'Please select a shipping method');
+        isValid = false;
+    }
+    
+    return isValid;
+}
+
+/**
+ * Clear Address Form
+ */
+function clearAddressForm() {
+    const formFields = ['address_label', 'full_name', 'phone_number', 'contact_email', 'street_address', 'city', 'postal_code'];
+    
+    formFields.forEach(fieldName => {
+        const field = document.getElementById(fieldName);
+        if (field) {
+            field.value = '';
+            field.classList.remove('is-invalid');
+        }
+    });
+    
+    // Uncheck save address checkbox
+    const saveCheckbox = document.getElementById('save_address');
+    if (saveCheckbox) {
+        saveCheckbox.checked = false;
+    }
+    
+    // Remove all error messages
+    document.querySelectorAll('.invalid-feedback').forEach(error => {
+        error.remove();
+    });
+}
+
+/**
+ * Enhanced Notification System
+ */
+function showNotification(type, message) {
+    // Remove existing notifications
+    document.querySelectorAll('.checkout-notification').forEach(notification => {
+        notification.remove();
+    });
+    
+    const notification = document.createElement('div');
+    notification.className = `checkout-notification alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        max-width: 400px;
+    `;
+    
+    notification.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+            <span>${message}</span>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+/**
+ * Update Cart Count in Navbar
+ */
+async function updateCartCount() {
+    try {
+        const response = await fetch('/test-cart/count');
+        const data = await response.json();
+        
+        const cartBadge = document.querySelector('.cart-badge');
+        if (cartBadge) {
+            cartBadge.textContent = data.cart_count;
+            
+            if (data.cart_count > 0) {
+                cartBadge.style.display = 'flex';
+            } else {
+                cartBadge.style.display = 'none';
+            }
+        }
+    } catch (error) {
+        console.error('Error updating cart count:', error);
+    }
+}
+
+/**
+ * Auto-fill form based on selected address
+ */
+function fillFormFromSelectedAddress() {
+    const selectedAddress = document.querySelector('.address-option.selected');
+    if (selectedAddress) {
+        const addressData = {
+            full_name: selectedAddress.dataset.fullName || '',
+            phone_number: selectedAddress.dataset.phone || '',
+            street_address: selectedAddress.dataset.street || '',
+            city: selectedAddress.dataset.city || '',
+            postal_code: selectedAddress.dataset.postal || ''
+        };
+        
+        Object.entries(addressData).forEach(([fieldName, value]) => {
+            const field = document.getElementById(fieldName);
+            if (field && value) {
+                field.value = value;
+            }
+        });
+    }
+}
+
+/**
+ * Format currency display
+ */
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-PH', {
+        style: 'currency',
+        currency: 'PHP',
+        minimumFractionDigits: 2
+    }).format(amount);
+}
+
+/**
+ * Initialize checkout validation on page load
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    // Add real-time validation to form fields
+    const requiredFields = document.querySelectorAll('input[required], textarea[required]');
+    requiredFields.forEach(field => {
+        field.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                showFieldError(this, 'This field is required');
+            } else {
+                clearFieldError({ target: this });
+            }
+        });
+    });
+    
+    // Auto-fill contact email based on saved address
+    fillFormFromSelectedAddress();
+    
+    console.log('SwiftShop Checkout System Initialized Successfully! 🚀');
+});
+
+// Missing functions - ADD TO END OF checkout.js
+
+function selectShipping(method) {
+    document.querySelectorAll('.shipping-option').forEach(option => {
+        option.classList.remove('selected');
+        option.querySelector('input[type="radio"]').checked = false;
+    });
+    
+    const selectedOption = document.querySelector(`input[value="${method}"]`).closest('.shipping-option');
+    selectedOption.classList.add('selected');
+    selectedOption.querySelector('input[type="radio"]').checked = true;
+    
+    updateShippingMethod(method);
+}
+
+function validateCheckoutForm() {
+    let isValid = true;
+    
+    // Check address selection
+    const selectedAddress = document.querySelector('.address-option.selected input[type="radio"]:checked');
+    const newAddressVisible = document.getElementById('new-address-form').style.display !== 'none';
+    
+    if (!selectedAddress && !newAddressVisible) {
+        showNotification('error', 'Please select or add a delivery address');
+        return false;
+    }
+    
+    // Validate new address form if visible
+    if (newAddressVisible) {
+        const requiredFields = ['full_name', 'phone_number', 'contact_email', 'street_address', 'city', 'postal_code'];
+        
+        requiredFields.forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            if (field && !field.value.trim()) {
+                showFieldError(field, 'This field is required');
+                isValid = false;
+            }
+        });
+    }
+    
+    // Check shipping method
+    const selectedShipping = document.querySelector('input[name="shipping_method"]:checked');
+    if (!selectedShipping) {
+        showNotification('error', 'Please select a shipping method');
+        isValid = false;
+    }
+    
+    return isValid;
+}
+
+function clearAddressForm() {
+    const formFields = ['address_label', 'full_name', 'phone_number', 'contact_email', 'street_address', 'city', 'postal_code'];
+    
+    formFields.forEach(fieldName => {
+        const field = document.getElementById(fieldName);
+        if (field) {
+            field.value = '';
+            field.classList.remove('is-invalid');
+        }
+    });
+    
+    document.getElementById('save_address').checked = false;
+    document.querySelectorAll('.invalid-feedback').forEach(error => error.remove());
+}
+
 // Keep existing functions: validateCheckoutForm, clearAddressForm, showNotification, updateCartCount
