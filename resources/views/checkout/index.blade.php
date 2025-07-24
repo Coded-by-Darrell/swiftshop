@@ -31,6 +31,14 @@
                 <form id="checkout-form">
                     @csrf
                     
+                    <!-- Hidden fields that get populated by address selection -->
+                    {{-- <input type="hidden" id="hidden_contact_email" name="contact_email" value=""> --}}
+                    <input type="hidden" id="hidden_full_name" name="full_name" value="">
+                    <input type="hidden" id="hidden_phone_number" name="phone_number" value="">
+                    <input type="hidden" id="hidden_street_address" name="street_address" value="">
+                    <input type="hidden" id="hidden_city" name="city" value="">
+                    <input type="hidden" id="hidden_postal_code" name="postal_code" value="">
+
                     <!-- Shipping Address Section -->
                     <div class="checkout-form-section">
                         <h3 class="section-title">
@@ -41,22 +49,28 @@
                         <!-- Saved Addresses -->
                         <div class="saved-addresses">
                             @foreach($savedAddresses as $address)
-                            <div class="address-option {{ $address['is_default'] ? 'selected' : '' }}" 
-                                 onclick="selectAddress({{ $address['id'] }})">
-                                <input type="radio" name="delivery_address" value="{{ $address['id'] }}" 
-                                       {{ $address['is_default'] ? 'checked' : '' }} style="display: none;">
-                                <div class="address-label">
-                                    {{ $address['label'] }}
-                                    @if($address['is_default'])
-                                        <span class="badge bg-primary ms-2">Default</span>
-                                    @endif
+                                <div class="address-option {{ $address['is_default'] ? 'selected' : '' }}" 
+                                    onclick="selectAddress({{ $address['id'] }})"
+                                    data-full-name="{{ $address['full_name'] }}"
+                                    data-phone="{{ $address['phone_number'] }}"
+                                    {{-- data-email="{{ $address['email'] ?? ''}}" --}}
+                                    data-street="{{ $address['street_address'] }}"
+                                    data-city="{{ $address['city'] }}"
+                                    data-postal="{{ $address['postal_code'] }}">
+                                    <input type="radio" name="delivery_address" value="{{ $address['id'] }}" 
+                                        {{ $address['is_default'] ? 'checked' : '' }} style="display: none;">
+                                    <div class="address-label">
+                                        {{ $address['label'] }}
+                                        @if($address['is_default'])
+                                            <span class="badge bg-primary ms-2">Default</span>
+                                        @endif
+                                    </div>
+                                    <p class="address-details">
+                                        {{ $address['full_name'] }}<br>
+                                        {{ $address['street_address'] }}<br>
+                                        {{ $address['city'] }}, {{ $address['postal_code'] }}
+                                    </p>
                                 </div>
-                                <p class="address-details">
-                                    {{ $address['full_name'] }}<br>
-                                    {{ $address['street_address'] }}<br>
-                                    {{ $address['city'] }}, {{ $address['postal_code'] }}
-                                </p>
-                            </div>
                             @endforeach
                         </div>
                         
@@ -88,11 +102,11 @@
                                 </div>
                             </div>
                             
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="contact_email" class="form-label">Email Address *</label>
                                 <input type="email" class="form-control" id="contact_email" name="contact_email" 
                                     placeholder="john.doe@example.com" required>
-                            </div>
+                            </div> --}}
                             
                             <div class="mb-3">
                                 <label for="street_address" class="form-label">Street Address *</label>
@@ -118,6 +132,15 @@
                                 <label class="form-check-label" for="save_address">
                                     Save this address for future orders
                                 </label>
+                            </div>
+                            <!-- Add Save Address Button -->
+                            <div class="d-flex gap-2 mt-3">
+                                <button type="button" class="btn btn-primary" onclick="saveAndUseAddress()">
+                                    <i class="fas fa-save me-2"></i>Save & Use This Address
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="hideNewAddressForm()">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </button>
                             </div>
                         </div>
                     </div>

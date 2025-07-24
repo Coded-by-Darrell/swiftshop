@@ -57,7 +57,7 @@ public function store(Request $request)
     $request->validate([
         'shipping_method' => 'required|string|in:standard,express,same_day',
         'delivery_address' => 'nullable|string',
-        'contact_email' => 'required|email',
+        // 'contact_email' => 'required|email',
         'phone_number' => 'required|string',
         'full_name' => 'required|string',
         'street_address' => 'required|string',
@@ -98,7 +98,7 @@ public function store(Request $request)
         $shippingAddress = [
             'full_name' => $request->full_name,
             'phone_number' => $request->phone_number,
-            'email' => $request->contact_email,
+            // 'email' => $request->contact_email,
             'street_address' => $request->street_address,
             'city' => $request->city,
             'postal_code' => $request->postal_code
@@ -111,7 +111,7 @@ public function store(Request $request)
         $order = Order::create([
             'order_number' => $orderNumber,
             'customer_name' => $request->full_name,
-            'customer_email' => $request->contact_email,
+            // 'customer_email' => $request->contact_email,
             'customer_phone' => $request->phone_number,
             'shipping_address' => $shippingAddress,
             'shipping_method' => $request->shipping_method,
@@ -347,32 +347,37 @@ public function saveAddress(Request $request)
         'label' => 'required|string|max:50',
         'full_name' => 'required|string|max:100',
         'phone_number' => 'required|string|max:20',
+        'email' => 'required|email|max:100', // Make email required for new addresses
         'street_address' => 'required|string|max:255',
         'city' => 'required|string|max:100',
         'postal_code' => 'required|string|max:10',
-        'is_default' => 'boolean'
+        'is_default' => 'nullable|boolean'
     ]);
     
-    // Get current saved addresses from session (simulating database)
+    // Get current saved addresses from session
     $savedAddresses = session()->get('user_addresses', []);
     
+    // Convert is_default to boolean properly
+    $isDefault = $request->boolean('is_default');
+    
     // If setting as default, unset other defaults
-    if ($request->is_default) {
+    if ($isDefault) {
         foreach ($savedAddresses as &$address) {
             $address['is_default'] = false;
         }
     }
     
-    // Create new address
+    // Create new address (include email)
     $newAddress = [
         'id' => count($savedAddresses) + 1,
         'label' => $request->label,
         'full_name' => $request->full_name,
         'phone_number' => $request->phone_number,
+        'email' => $request->email, // Include email in saved address
         'street_address' => $request->street_address,
         'city' => $request->city,
         'postal_code' => $request->postal_code,
-        'is_default' => $request->is_default ?? false
+        'is_default' => $isDefault
     ];
     
     // Add to saved addresses
@@ -384,7 +389,7 @@ public function saveAddress(Request $request)
     return response()->json([
         'success' => true,
         'message' => 'Address saved successfully!',
-        'address' => $newAddress
+        'address' => $newAddress // This now includes the email
     ]);
 }
 
@@ -466,7 +471,7 @@ private function calculateCartTotals($cart, $customShipping = null)
 }
 
 /**
- * Enhanced getSavedAddresses with session integration
+ * Enhanced getSavedAddresses with session integration and email
  */
 private function getSavedAddresses()
 {
@@ -477,13 +482,14 @@ private function getSavedAddresses()
         return $sessionAddresses;
     }
     
-    // Return default addresses if no saved addresses
+    // Return default addresses with email included
     return [
         [
             'id' => 1,
             'label' => 'Home',
             'full_name' => 'Darrell Ocampo',
             'phone_number' => '+63 917 123 4567',
+            'email' => '2100484@ub.edu.ph',
             'street_address' => '123 Main Street, Barangay San Antonio',
             'city' => 'Bauan',
             'postal_code' => '4201',
@@ -494,6 +500,7 @@ private function getSavedAddresses()
             'label' => 'Office',
             'full_name' => 'Darrell Ocampo',
             'phone_number' => '+63 917 123 4567',
+            'email' => '2100484@ub.edu.ph',
             'street_address' => '456 Business Ave, Barangay Poblacion',
             'city' => 'Bauan',
             'postal_code' => '4201',
