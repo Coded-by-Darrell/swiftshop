@@ -1,47 +1,142 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Welcome back - SwiftShop</title>
+    
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom Auth Styles -->
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+</head>
+<body>
+    <!-- Back to Home -->
+    <div class="back-home">
+        <a href="{{ url('/') }}">
+            <i class="fas fa-arrow-left"></i>
+            Back to SwiftShop
+        </a>
+    </div>
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Header -->
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <img src="{{ asset('images/logo.png') }}" alt="SwiftShop" />
+                </div>
+                <h1 class="auth-title">Welcome back</h1>
+                <p class="auth-subtitle">Sign in to your SwiftShop account</p>
+            </div>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
+            <!-- Session Status -->
+            @if (session('status'))
+                <div class="alert alert-success">
+                    {{ session('status') }}
+                </div>
             @endif
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+            <!-- Login Form -->
+            <form method="POST" action="{{ route('login') }}" class="auth-form">
+                @csrf
+
+                <!-- Email Address -->
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input 
+                        id="email" 
+                        class="form-control @error('email') error @enderror" 
+                        type="email" 
+                        name="email" 
+                        value="{{ old('email') }}" 
+                        placeholder="Enter your email address"
+                        required 
+                        autofocus 
+                        autocomplete="username" 
+                    />
+                    @error('email')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input 
+                        id="password" 
+                        class="form-control @error('password') error @enderror"
+                        type="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required 
+                        autocomplete="current-password" 
+                    />
+                    @error('password')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Remember Me -->
+                <div class="checkbox-group">
+                    <input 
+                        id="remember_me" 
+                        type="checkbox" 
+                        class="checkbox-input" 
+                        name="remember"
+                    >
+                    <label for="remember_me" class="checkbox-label">
+                        Remember me
+                    </label>
+                </div>
+
+                <!-- Forgot Password -->
+                @if (Route::has('password.request'))
+                    <div class="forgot-password">
+                        <a href="{{ route('password.request') }}" class="auth-link">
+                            Forgot your password?
+                        </a>
+                    </div>
+                @endif
+
+                <!-- Login Button -->
+                <button type="submit" class="btn-primary">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Social Login -->
+            <div class="social-login">
+                <div class="divider">
+                    <span>Or continue with</span>
+                </div>
+                
+                <div class="social-buttons">
+                    <a href="#" class="btn-google">
+                        <i class="fab fa-google"></i>
+                        Google
+                    </a>
+                    <a href="#" class="btn-facebook">
+                        <i class="fab fa-facebook-f"></i>
+                        Facebook
+                    </a>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="auth-footer">
+                <p>
+                    Don't have an account? 
+                    <a href="{{ route('register') }}" class="auth-link">Sign up</a>
+                </p>
+            </div>
         </div>
-    </form>
-</x-guest-layout>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

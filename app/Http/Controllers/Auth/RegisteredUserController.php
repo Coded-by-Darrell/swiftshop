@@ -45,6 +45,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Fixed: Redirect to browse instead of dashboard
+        return redirect(route('test.browse'));
     }
 }

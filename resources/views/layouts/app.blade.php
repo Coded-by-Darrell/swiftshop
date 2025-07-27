@@ -39,8 +39,10 @@
                 </ul>
                 
                 <div class="d-flex flex-column flex-lg-row">
-                    <button type="button" class="btn btn-outline-primary me-lg-2 mb-2 mb-lg-0">Login</button>
-                    <button type="button" class="btn btn-primary">Sign-up</button>
+                    <!-- Fixed: Link to actual login route -->
+                    <a href="{{ route('login') }}" class="btn btn-outline-primary me-lg-2 mb-2 mb-lg-0">Login</a>
+                    <!-- Fixed: Link to actual register route -->
+                    <a href="{{ route('register') }}" class="btn btn-primary">Sign-up</a>
                 </div>
             </div>
         </div>
