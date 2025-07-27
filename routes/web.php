@@ -23,17 +23,6 @@ Route::get('/seller/{id}', function($id){
     return "Seller ID: " . $id ;
 })->name('seller.show');
 
-Route::get('/login', function(){
-    return 'Welcome to Swiftshop, please log in';
-})->name('login');
-
-Route::get('/register', function(){
-    return 'Welcome to swiftshop! New here? Sign up now';
-})->name('register');
-
-Route::get('password/reset', function(){
-    return 'Reset Password';
-})->name('password.reset');
 
 Route::post('/contact', function() {
     return 'Contact form submitted successfully!';
@@ -124,3 +113,5 @@ Route::prefix('test-checkout')->name('test.checkout.')->group(function () {
     Route::get('/addresses', [CheckoutController::class, 'getAddresses'])->name('addresses');
     Route::post('/update-shipping', [CheckoutController::class, 'updateShipping'])->name('update-shipping');
 });
+
+require __DIR__.'/auth.php';

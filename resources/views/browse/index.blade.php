@@ -10,7 +10,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <h1 class="welcome-title">Welcome back, {{ $userAccount['firstName'] }}!👋🏻</h1>
+                    <h1 class="welcome-title">Welcome back, {{ $userAccount ? $userAccount->name : 'Guest' }}!👋🏻</h1>
                     <p class="welcome-subtitle">Discover amazing deals and new products from your favorite vendors</p>
                 </div>
             </div>

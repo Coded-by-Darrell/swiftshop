@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -32,11 +33,7 @@ class CheckoutController extends Controller
         $cartTotals = $this->calculateCartTotals($cart);
         
         // User account data (following your pattern)
-        $userAccount = [
-            'firstName' => 'Darrell',
-            'lastName' => 'Ocampo',
-            'fullName' => 'Darrell Ocampo'
-        ];
+        $userAccount = Auth::user();
         
         // Get saved addresses (mock data for now)
         $savedAddresses = $this->getSavedAddresses();
@@ -107,10 +104,17 @@ public function store(Request $request)
         // Calculate estimated delivery
         $estimatedDelivery = $this->calculateEstimatedDelivery($request->shipping_method);
         
+        Log::info('Current user ID: ' . Auth::id());
+        Log::info('User logged in: ' . (Auth::check() ? 'Yes' : 'No'));
+
         // Create main order
         $order = Order::create([
+
+
             'order_number' => $orderNumber,
-            'customer_name' => $request->full_name,
+            'user_id' => Auth::user()->id,
+    'customer_name' => $request->full_name,
+    'customer_email' => Auth::user()->email,
             // 'customer_email' => $request->contact_email,
             'customer_phone' => $request->phone_number,
             'shipping_address' => $shippingAddress,
@@ -295,11 +299,7 @@ private function prepareOrderConfirmationData(Order $order, array $cart)
         }
         
         // User account data
-        $userAccount = [
-            'firstName' => 'Darrell',
-            'lastName' => 'Ocampo',
-            'fullName' => 'Darrell Ocampo'
-        ];
+        $userAccount = Auth::user();
         
         return view('checkout.confirmation', compact('orderData', 'userAccount'));
     }

@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -23,11 +25,7 @@ class ProductController extends Controller
 
     public function show($id)
 {
-    $userAccount = [
-        'firstName' => 'Darrell',
-        'lastName' => 'Ocampo',
-        'fullName' => 'Darrell Ocampo'
-    ];
+    $userAccount = Auth::user();
 
     // Find the product by ID with all variant relationships
     $product = Product::with([

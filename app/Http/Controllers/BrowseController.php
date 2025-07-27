@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Vendor;
@@ -11,11 +12,7 @@ class BrowseController extends Controller
 {
     public function index()
         {
-            $userAccount = [
-                'firstName' => 'Darrell',
-                'lastName' => 'Ocampo',
-                'fullName' => 'Darrell Ocampo'
-            ];
+            $userAccount = Auth::user() ?: null;
 
             // Get products for Special Deals (products with active discounts)
             $specialDeals = Product::with(['vendor', 'category', 'defaultVariant.attributeValues'])
@@ -298,11 +295,7 @@ public function category($categorySlug, Request $request)
         ->values();
     
     // User account data for the layout
-    $userAccount = [
-        'firstName' => 'Darrell',
-        'lastName' => 'Ocampo',
-        'fullName' => 'Darrell Ocampo'
-    ];
+    $userAccount = Auth::user() ?: null;
     
     return view('category', compact('category', 'products', 'subcategories', 'brands', 'userAccount'));
 }
@@ -380,11 +373,7 @@ public function search(Request $request)
     $categories = Category::all();
     $vendors = Vendor::all();
 
-    $userAccount = [
-        'firstName' => 'Darrell',
-        'lastName' => 'Ocampo',
-        'fullName' => 'Darrell Ocampo'
-    ];
+    $userAccount = Auth::user() ?: null;
 
     
 

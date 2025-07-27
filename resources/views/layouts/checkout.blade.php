@@ -40,7 +40,7 @@
                     <div class="dropdown user-dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user-circle fa-lg me-1"></i>
-                            <span class="d-none d-sm-inline">{{ $userAccount['fullName'] }}</span>
+                            <span class="d-none d-sm-inline">{{ $userAccount }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Manage Account</a></li>

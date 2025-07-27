@@ -93,7 +93,7 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="full_name" class="form-label">Full Name *</label>
                                     <input type="text" class="form-control" id="full_name" name="full_name" 
-                                        value="{{ $userAccount['fullName'] }}" required>
+                                        value="{{ $userAccount }}" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="phone_number" class="form-label">Phone Number *</label>

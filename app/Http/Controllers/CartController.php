@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Vendor;
@@ -26,11 +27,7 @@ class CartController extends Controller
         $suggestedProducts = $this->getSuggestedProducts();
         
         // User account data (following your pattern)
-        $userAccount = [
-            'firstName' => 'Darrell',
-            'lastName' => 'Ocampo',
-            'fullName' => 'Darrell Ocampo'
-        ];
+        $userAccount = Auth::user();
         
         return view('cart.index', compact(
             'cartByVendor',
