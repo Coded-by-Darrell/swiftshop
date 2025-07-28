@@ -124,10 +124,8 @@
                 <!-- Action Buttons -->
                 <div class="action-buttons mb-4">
                     <div class="d-flex gap-3">
-                        <button class="btn btn-outline-primary flex-fill py-2 fw-semibold add-to-cart-btn">Add to Cart</button>
-                        <button class="btn btn-primary flex-fill py-2 fw-semibold buy-now-btn">Buy Now</button>
-                    </div>
-                </div>
+                        <button class="btn btn-outline-primary flex-fill py-2 fw-semibold add-to-cart-btn" data-product-id="{{ $product->id }}">Add to Cart</button>
+                        <button class="btn btn-primary flex-fill py-2 fw-semibold btn-buy-now" data-product-id="{{ $product->id }}">Buy Now</button>                </div>
             </div>
         </div>
     </div>

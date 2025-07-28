@@ -208,7 +208,9 @@ class BrowseController extends Controller
 public function category($categorySlug, Request $request)
 {
     // Find the category by slug
-    $category = Category::where('slug', $categorySlug)->firstOrFail();
+    $category = Category::where('slug', $categorySlug)
+                       ->orWhere('id', $categorySlug)
+                       ->firstOrFail();
     
     // Start building the query for products in this category
     $query = Product::with(['vendor', 'category', 'defaultVariant.attributeValues'])
@@ -384,6 +386,17 @@ public function search(Request $request)
     $vendors = Vendor::all();
 
     $userAccount = Auth::user() ?: null;
+
+    // Handle special cases
+if ($request->has('deals') && $request->deals == 'special') {
+    $productsQuery->whereHas('variants', function($q) {
+        $q->onSale();
+    });
+}
+
+if ($request->has('releases') && $request->releases == 'new') {
+    $productsQuery->orderBy('created_at', 'desc');
+}
 
     
 
