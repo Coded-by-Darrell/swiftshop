@@ -97,12 +97,18 @@ Route::prefix('test-cart')->name('test.cart.')->group(function () {
 });
 
 /// Test Checkout Routes (Public for development phase)
-/// Test Checkout Routes (Public for development phase)
 Route::prefix('test-checkout')->name('test.checkout.')->group(function () {
     // Checkout page
     Route::get('/', [CheckoutController::class, 'index'])->name('index');
     
-    // Process checkout - ADD THIS LINE
+    // Buy Now functionality
+    Route::post('/buy-now', [CheckoutController::class, 'buyNow'])->name('buy-now');
+    
+    // Cart checkout functionality
+    Route::post('/checkout-vendor', [CheckoutController::class, 'checkoutVendor'])->name('checkout-vendor');
+    Route::post('/checkout-all', [CheckoutController::class, 'checkoutAll'])->name('checkout-all');
+    
+    // Process checkout
     Route::post('/place-order', [CheckoutController::class, 'store'])->name('place-order');
     
     // Order confirmation

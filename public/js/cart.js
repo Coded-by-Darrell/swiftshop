@@ -7,11 +7,204 @@ document.addEventListener('DOMContentLoaded', function() {
     // CSRF token for AJAX requests
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
-    // Initialize cart functionality
-    initCartQuantityControls();
-    initRemoveItemButtons();
-    initSuggestedProductButtons();
-    initAddToCartButtons();
+    /**
+     * Initialize Buy Now buttons
+     */
+    function initBuyNowButtons() {
+        console.log('Initializing Buy Now buttons...');
+        
+        document.querySelectorAll('.btn-buy-now').forEach(button => {
+            console.log('Found Buy Now button:', button);
+            
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Buy Now button clicked!');
+                
+                const productId = this.dataset.productId || 
+                                 this.closest('.product-card').dataset.productId ||
+                                 this.closest('[data-product-id]').dataset.productId;
+                
+                console.log('Product ID:', productId);
+                
+                if (productId) {
+                    buyNow(productId, 1);
+                } else {
+                    console.error('Product ID not found for Buy Now');
+                }
+            });
+        });
+    }
+    
+    /**
+     * Buy Now function - creates quick checkout session
+     */
+    function buyNow(productId, quantity = 1) {
+        console.log('Buy Now called with:', productId, quantity);
+        
+        showLoadingState('Processing...');
+        
+        fetch('/test-checkout/buy-now', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity: quantity
+            })
+        })
+        .then(response => {
+            console.log('Response received:', response);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response data:', data);
+            hideLoadingState();
+            
+            if (data.success) {
+                showNotification(data.message, 'success');
+                
+                setTimeout(() => {
+                    window.location.href = data.redirect_url;
+                }, 500);
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            hideLoadingState();
+            console.error('Buy Now Error:', error);
+            showNotification('Failed to process Buy Now request', 'error');
+        });
+    }
+    
+    /**
+     * Initialize cart checkout buttons
+     */
+    function initCartCheckoutButtons() {
+        console.log('Initializing cart checkout buttons...');
+        
+        // Individual vendor checkout buttons
+        document.querySelectorAll('.vendor-checkout-btn').forEach(button => {
+            console.log('Found vendor checkout button:', button);
+            
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const vendorId = this.dataset.vendorId;
+                console.log('Vendor checkout clicked for vendor:', vendorId);
+                
+                if (vendorId) {
+                    checkoutVendor(vendorId);
+                } else {
+                    console.error('Vendor ID not found');
+                }
+            });
+        });
+        
+        // Checkout all selected items button
+        document.querySelectorAll('.checkout-all-btn').forEach(button => {
+            console.log('Found checkout all button:', button);
+            
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                console.log('Checkout all clicked');
+                checkoutAll();
+            });
+        });
+    }
+    
+    /**
+     * Checkout specific vendor items
+     */
+    function checkoutVendor(vendorId) {
+        console.log('Checking out vendor:', vendorId);
+        
+        showLoadingState('Preparing checkout...');
+        
+        const requestData = {
+            vendor_id: vendorId
+        };
+        
+        fetch('/test-checkout/checkout-vendor', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => {
+            console.log('Vendor checkout response received:', response);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Vendor checkout response data:', data);
+            hideLoadingState();
+            
+            if (data.success) {
+                showNotification(data.message, 'success');
+                
+                setTimeout(() => {
+                    window.location.href = data.redirect_url;
+                }, 500);
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            hideLoadingState();
+            console.error('Vendor checkout error:', error);
+            showNotification('Failed to process checkout', 'error');
+        });
+    }
+    
+    /**
+     * Checkout all selected items
+     */
+    function checkoutAll() {
+        console.log('Checking out all items');
+        
+        showLoadingState('Preparing checkout...');
+        
+        const requestData = {};
+        
+        fetch('/test-checkout/checkout-all', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => {
+            console.log('Checkout all response received:', response);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Checkout all response data:', data);
+            hideLoadingState();
+            
+            if (data.success) {
+                showNotification(data.message, 'success');
+                
+                setTimeout(() => {
+                    window.location.href = data.redirect_url;
+                }, 500);
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            hideLoadingState();
+            console.error('Checkout all error:', error);
+            showNotification('Failed to process checkout', 'error');
+        });
+    }
     
     /**
      * Initialize quantity control buttons
@@ -88,8 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.btn-buy-suggested').forEach(button => {
             button.addEventListener('click', function() {
                 const productId = this.dataset.productId;
-                // For now, just add to cart - you can modify this later for direct checkout
-                addToCart(productId, 1);
+                buyNow(productId, 1);
             });
         });
     }
@@ -138,13 +330,11 @@ document.addEventListener('DOMContentLoaded', function() {
             hideLoadingState();
             
             if (data.success) {
-                // Update the input value
                 const input = document.querySelector(`input[data-cart-key="${cartKey}"]`);
                 if (input) {
                     input.value = quantity;
                 }
                 
-                // Reload page to update totals (you can make this more dynamic later)
                 location.reload();
             } else {
                 showNotification(data.message, 'error');
@@ -179,16 +369,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 hideLoadingState();
                 
                 if (data.success) {
-                    // Remove the item from DOM or reload page
                     const cartItem = document.querySelector(`[data-cart-key="${cartKey}"]`);
                     if (cartItem) {
                         cartItem.remove();
                     }
                     
-                    // Update cart count in navbar
                     updateCartCount();
-                    
-                    // Reload to update totals
                     location.reload();
                 } else {
                     showNotification(data.message, 'error');
@@ -248,7 +434,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (cartBadge) {
                     cartBadge.textContent = data.cart_count;
                     
-                    // Show/hide badge based on count
                     if (data.cart_count > 0) {
                         cartBadge.style.display = 'flex';
                     } else {
@@ -264,13 +449,12 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * Show loading state
      */
-    function showLoadingState() {
-        // Add a simple loading indicator
+    function showLoadingState(message = 'Loading...') {
         const existingLoader = document.querySelector('.cart-loader');
         if (!existingLoader) {
             const loader = document.createElement('div');
             loader.className = 'cart-loader';
-            loader.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            loader.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${message}`;
             loader.style.cssText = `
                 position: fixed;
                 top: 20px;
@@ -324,7 +508,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.body.appendChild(notification);
         
-        // Auto remove after 3 seconds
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.remove();
@@ -332,7 +515,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
     
+    // Initialize all cart functionality after functions are defined
+    initCartQuantityControls();
+    initRemoveItemButtons();
+    initSuggestedProductButtons();
+    initAddToCartButtons();
+    initBuyNowButtons();
+    initCartCheckoutButtons(); // THIS WAS MISSING!
     
     // Initialize cart count on page load
     updateCartCount();
+    
+    // DEBUG: Add this temporarily
+    console.log('=== CART DEBUG INFO ===');
+    console.log('Vendor checkout buttons found:', document.querySelectorAll('.vendor-checkout-btn').length);
+    console.log('Checkout all buttons found:', document.querySelectorAll('.checkout-all-btn').length);
+    
+    document.querySelectorAll('.vendor-checkout-btn').forEach((btn, index) => {
+        console.log(`Vendor button ${index}:`, btn, 'Vendor ID:', btn.dataset.vendorId);
+    });
+    
+    document.querySelectorAll('.checkout-all-btn').forEach((btn, index) => {
+        console.log(`Checkout all button ${index}:`, btn);
+    });
 });

@@ -13,40 +13,59 @@ use App\Models\ProductVariant;
 
 class CheckoutController extends Controller
 {
+
     /**
-     * Display the checkout page
-     */
-    public function index(Request $request)
-    {
-        // Get cart from session
+ * Display the checkout page
+ */
+public function index(Request $request)
+{
+    // Check session type and get appropriate cart
+    $isQuickCheckout = session()->get('is_quick_checkout', false);
+    $isVendorCheckout = session()->get('is_vendor_checkout', false);
+    $checkoutCart = session()->get('checkout_cart');
+    
+    if ($isQuickCheckout) {
+        // Quick checkout (Buy Now)
+        $cart = session()->get('quick_checkout_cart', []);
+    } elseif ($checkoutCart) {
+        // Cart checkout (vendor or all items)
+        $cart = $checkoutCart;
+    } else {
+        // Regular cart checkout (fallback)
         $cart = session()->get('cart', []);
-        
-        // If cart is empty, redirect to browse
-        if (empty($cart)) {
-            return redirect()->route('test.browse')->with('error', 'Your cart is empty');
-        }
-        
-        // Group cart items by vendor for multi-vendor display
-        $cartByVendor = $this->groupCartByVendor($cart);
-        
-        // Calculate totals
-        $cartTotals = $this->calculateCartTotals($cart);
-        
-        // User account data (following your pattern)
-        $userAccount = Auth::user();
-        
-        // Get saved addresses (mock data for now)
-        $savedAddresses = $this->getSavedAddresses();
-        
-        return view('checkout.index', compact(
-            'cartByVendor',
-            'cartTotals',
-            'userAccount',
-            'savedAddresses'
-        ));
     }
     
-    /**
+    // If cart is empty, redirect to browse
+    if (empty($cart)) {
+        return redirect()->route('test.browse')->with('error', 'Your cart is empty');
+    }
+    
+    // Group cart items by vendor for multi-vendor display
+    $cartByVendor = $this->groupCartByVendor($cart);
+    
+    // Calculate totals
+    $cartTotals = $this->calculateCartTotals($cart);
+    
+    // User account data
+    $userAccount = Auth::user();
+    
+    // Get saved addresses
+    $savedAddresses = $this->getSavedAddresses();
+    
+    // Determine checkout type for display
+    $checkoutType = $isQuickCheckout ? 'quick' : ($isVendorCheckout ? 'vendor' : 'cart');
+    
+    return view('checkout.index', compact(
+        'cartByVendor',
+        'cartTotals',
+        'userAccount',
+        'savedAddresses',
+        'isQuickCheckout',
+        'checkoutType'
+    ));
+}
+  
+/**
  * Process checkout and create orders
  */
 public function store(Request $request)
@@ -54,7 +73,6 @@ public function store(Request $request)
     $request->validate([
         'shipping_method' => 'required|string|in:standard,express,same_day',
         'delivery_address' => 'nullable|string',
-        // 'contact_email' => 'required|email',
         'phone_number' => 'required|string',
         'full_name' => 'required|string',
         'street_address' => 'required|string',
@@ -63,8 +81,20 @@ public function store(Request $request)
         'order_notes' => 'nullable|string|max:500'
     ]);
     
-    // Get cart from session
-    $cart = session()->get('cart', []);
+    // Get the appropriate cart based on session
+    $isQuickCheckout = session()->get('is_quick_checkout', false);
+    $checkoutCart = session()->get('checkout_cart');
+    
+    if ($isQuickCheckout) {
+        // Quick checkout (Buy Now)
+        $cart = session()->get('quick_checkout_cart', []);
+    } elseif ($checkoutCart) {
+        // Cart checkout (vendor or all items)
+        $cart = $checkoutCart;
+    } else {
+        // Regular cart checkout (fallback)
+        $cart = session()->get('cart', []);
+    }
     
     if (empty($cart)) {
         return response()->json([
@@ -95,7 +125,6 @@ public function store(Request $request)
         $shippingAddress = [
             'full_name' => $request->full_name,
             'phone_number' => $request->phone_number,
-            // 'email' => $request->contact_email,
             'street_address' => $request->street_address,
             'city' => $request->city,
             'postal_code' => $request->postal_code
@@ -104,18 +133,12 @@ public function store(Request $request)
         // Calculate estimated delivery
         $estimatedDelivery = $this->calculateEstimatedDelivery($request->shipping_method);
         
-        Log::info('Current user ID: ' . Auth::id());
-        Log::info('User logged in: ' . (Auth::check() ? 'Yes' : 'No'));
-
         // Create main order
         $order = Order::create([
-
-
             'order_number' => $orderNumber,
             'user_id' => Auth::user()->id,
-    'customer_name' => $request->full_name,
-    'customer_email' => Auth::user()->email,
-            // 'customer_email' => $request->contact_email,
+            'customer_name' => $request->full_name,
+            'customer_email' => Auth::user()->email,
             'customer_phone' => $request->phone_number,
             'shipping_address' => $shippingAddress,
             'shipping_method' => $request->shipping_method,
@@ -139,14 +162,19 @@ public function store(Request $request)
         $orderData = $this->prepareOrderConfirmationData($order, $cart);
         session()->put('last_order', $orderData);
         
-        // Clear cart
-        session()->forget('cart');
+        // Clear the appropriate cart sessions
+        if ($isQuickCheckout) {
+            session()->forget(['quick_checkout_cart', 'is_quick_checkout']);
+        } elseif ($checkoutCart) {
+            // Remove checked out items from main cart if it was a partial checkout
+            $this->removeCheckedOutItemsFromCart($cart);
+            session()->forget(['checkout_cart', 'is_vendor_checkout', 'checkout_vendor_id']);
+        } else {
+            session()->forget('cart');
+        }
         
         // Commit transaction
         DB::commit();
-        
-        // Send order confirmation email (you can implement this later)
-        // $this->sendOrderConfirmationEmail($order);
         
         return response()->json([
             'success' => true,
@@ -170,6 +198,22 @@ public function store(Request $request)
             'message' => 'Failed to process order. Please try again.'
         ]);
     }
+}
+
+/**
+ * Remove checked out items from main cart
+ */
+private function removeCheckedOutItemsFromCart($checkedOutCart)
+{
+    $mainCart = session()->get('cart', []);
+    
+    foreach ($checkedOutCart as $cartKey => $item) {
+        if (isset($mainCart[$cartKey])) {
+            unset($mainCart[$cartKey]);
+        }
+    }
+    
+    session()->put('cart', $mainCart);
 }
 
 /**
@@ -508,5 +552,187 @@ private function getSavedAddresses()
         ]
     ];
 }
+
+/**
+ * Handle Buy Now functionality - create quick checkout session
+ */
+public function buyNow(Request $request)
+{
+    $request->validate([
+        'product_id' => 'required|exists:products,id',
+        'quantity' => 'nullable|integer|min:1|max:99'
+    ]);
     
+    try {
+        // Get product with relationships
+        $product = Product::with(['vendor', 'category', 'defaultVariant'])->findOrFail($request->product_id);
+        
+        // Check if product is active and in stock
+        if ($product->status !== 'active') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product is not available'
+            ]);
+        }
+        
+        // Check stock availability
+        $quantity = $request->quantity ?? 1;
+        if (!$product->isInStock() || $product->getTotalStock() < $quantity) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient stock available'
+            ]);
+        }
+        
+        // Create quick checkout item
+        $quickCheckoutItem = [
+            'product_id' => $product->id,
+            'variant_id' => null, // Default variant for now
+            'product_name' => $product->name,
+            'vendor_id' => $product->vendor_id,
+            'vendor_name' => $product->vendor->business_name,
+            'price' => $product->getDisplayPrice(),
+            'original_price' => $product->getOriginalPrice(),
+            'quantity' => $quantity,
+            'max_quantity' => $product->getTotalStock(),
+            'image' => $product->images[0] ?? null
+        ];
+        
+        // Create cart key
+        $cartKey = $product->id . '_default';
+        
+        // Store in quick checkout session (separate from main cart)
+        $quickCart = [$cartKey => $quickCheckoutItem];
+        session()->put('quick_checkout_cart', $quickCart);
+        session()->put('is_quick_checkout', true);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Redirecting to checkout...',
+            'redirect_url' => route('test.checkout.index')
+        ]);
+        
+    } catch (\Exception $e) {
+        Log::error('Buy Now failed: ' . $e->getMessage(), [
+            'product_id' => $request->product_id,
+            'quantity' => $request->quantity
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to process request. Please try again.'
+        ]);
+    }
+}
+
+/**
+ * Checkout specific vendor items from cart
+ */
+public function checkoutVendor(Request $request)
+{
+    $request->validate([
+        'vendor_id' => 'required|integer',
+        'cart_keys' => 'nullable|array' // Optional: specific items to checkout
+    ]);
+    
+    // Get cart from session
+    $cart = session()->get('cart', []);
+    
+    if (empty($cart)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Cart is empty'
+        ]);
+    }
+    
+    // Filter cart items by vendor
+    $vendorCart = [];
+    $vendorId = $request->vendor_id;
+    
+    // If specific cart keys provided, use only those
+    if ($request->cart_keys && !empty($request->cart_keys)) {
+        foreach ($request->cart_keys as $cartKey) {
+            if (isset($cart[$cartKey]) && $cart[$cartKey]['vendor_id'] == $vendorId) {
+                $vendorCart[$cartKey] = $cart[$cartKey];
+            }
+        }
+    } else {
+        // Get all items from this vendor
+        foreach ($cart as $cartKey => $item) {
+            if ($item['vendor_id'] == $vendorId) {
+                $vendorCart[$cartKey] = $item;
+            }
+        }
+    }
+    
+    if (empty($vendorCart)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No items found for this vendor'
+        ]);
+    }
+    
+    // Store vendor-specific cart in checkout session
+    session()->put('checkout_cart', $vendorCart);
+    session()->put('is_vendor_checkout', true);
+    session()->put('checkout_vendor_id', $vendorId);
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Redirecting to checkout...',
+        'redirect_url' => route('test.checkout.index')
+    ]);
+}
+
+/**
+ * Checkout all selected items from cart
+ */
+public function checkoutAll(Request $request)
+{
+    $request->validate([
+        'cart_keys' => 'nullable|array' // Optional: specific items to checkout
+    ]);
+    
+    // Get cart from session
+    $cart = session()->get('cart', []);
+    
+    if (empty($cart)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Cart is empty'
+        ]);
+    }
+    
+    $checkoutCart = [];
+    
+    // If specific cart keys provided, use only those
+    if ($request->cart_keys && !empty($request->cart_keys)) {
+        foreach ($request->cart_keys as $cartKey) {
+            if (isset($cart[$cartKey])) {
+                $checkoutCart[$cartKey] = $cart[$cartKey];
+            }
+        }
+    } else {
+        // Use entire cart
+        $checkoutCart = $cart;
+    }
+    
+    if (empty($checkoutCart)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No items selected for checkout'
+        ]);
+    }
+    
+    // Store checkout cart in session
+    session()->put('checkout_cart', $checkoutCart);
+    session()->put('is_vendor_checkout', false);
+    session()->forget('checkout_vendor_id');
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Redirecting to checkout...',
+        'redirect_url' => route('test.checkout.index')
+    ]);
+}
 }

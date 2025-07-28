@@ -9,11 +9,20 @@ use App\Models\Vendor;
 
 class CartController extends Controller
 {
+    private function clearQuickCheckoutSession()
+{
+    if (session()->has('is_quick_checkout')) {
+        session()->forget(['quick_checkout_cart', 'is_quick_checkout']);
+    }
+}
+
     /**
      * Display the shopping cart
      */
     public function index()
-    {
+    { // Clear quick checkout session when user visits cart
+        $this->clearQuickCheckoutSession();
+
         // Get cart from session
         $cart = session()->get('cart', []);
         
@@ -36,6 +45,8 @@ class CartController extends Controller
             'userAccount'
         ));
     }
+
+
     
     /**
      * Add product to cart

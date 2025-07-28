@@ -10,8 +10,18 @@ use App\Models\Vendor;
 
 class BrowseController extends Controller
 {
+    private function clearQuickCheckoutSession()
+{
+    if (session()->has('is_quick_checkout')) {
+        session()->forget(['quick_checkout_cart', 'is_quick_checkout']);
+    }
+}
+
     public function index()
         {
+            // Clear quick checkout session when user visits browse
+            $this->clearQuickCheckoutSession();
+
             $userAccount = Auth::user() ?: null;
 
             // Get products for Special Deals (products with active discounts)

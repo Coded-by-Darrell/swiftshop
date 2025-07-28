@@ -23,8 +23,18 @@ class ProductController extends Controller
         return "Category: " . $category;
     }
 
+    private function clearQuickCheckoutSession()
+{
+    if (session()->has('is_quick_checkout')) {
+        session()->forget(['quick_checkout_cart', 'is_quick_checkout']);
+    }
+}
+
     public function show($id)
 {
+    // Clear quick checkout session when user visits product page
+    $this->clearQuickCheckoutSession();
+
     $userAccount = Auth::user();
 
     // Find the product by ID with all variant relationships
