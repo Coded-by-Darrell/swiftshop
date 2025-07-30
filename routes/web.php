@@ -120,4 +120,37 @@ Route::prefix('test-checkout')->name('test.checkout.')->group(function () {
     Route::post('/update-shipping', [CheckoutController::class, 'updateShipping'])->name('update-shipping');
 });
 
+/// Test Account Routes (Public for development phase)
+Route::prefix('test-account')->name('test.account.')->group(function () {
+    // Account profile page
+    Route::get('/profile', [App\Http\Controllers\AccountController::class, 'profile'])->name('profile');
+    
+    // Other account pages (we'll implement these later)
+    Route::get('/order-history', [App\Http\Controllers\AccountController::class, 'orderHistory'])->name('order-history');
+    Route::get('/address-book', [App\Http\Controllers\AccountController::class, 'addressBook'])->name('address-book');
+    Route::get('/notifications', [App\Http\Controllers\AccountController::class, 'notifications'])->name('notifications');
+    Route::get('/settings', [App\Http\Controllers\AccountController::class, 'accountSettings'])->name('settings');
+});
+
+// Test account redirect
+Route::get('/test-account', function() {
+    return redirect()->route('test.account.profile');
+})->name('test.account.index');
+
+/// Test Account Routes (Public for development phase)
+Route::prefix('test-account')->name('test.account.')->group(function () {
+    // Account profile page
+    Route::get('/profile', [App\Http\Controllers\AccountController::class, 'profile'])->name('profile');
+    
+    // Edit profile routes
+    Route::get('/edit-profile', [App\Http\Controllers\AccountController::class, 'editProfile'])->name('edit-profile');
+    Route::put('/update-profile', [App\Http\Controllers\AccountController::class, 'updateProfile'])->name('update-profile');
+    
+    // Other account pages (we'll implement these later)
+    Route::get('/order-history', [App\Http\Controllers\AccountController::class, 'orderHistory'])->name('order-history');
+    Route::get('/address-book', [App\Http\Controllers\AccountController::class, 'addressBook'])->name('address-book');
+    Route::get('/notifications', [App\Http\Controllers\AccountController::class, 'notifications'])->name('notifications');
+    Route::get('/settings', [App\Http\Controllers\AccountController::class, 'accountSettings'])->name('settings');
+});
+
 require __DIR__.'/auth.php';

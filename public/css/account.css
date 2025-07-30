@@ -1,0 +1,488 @@
+/* Account Management Styles - Following SwiftShop Design System */
+/* Using global variables from app.css */
+
+:root {
+    --primary-blue: #0C5CE6;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --dark-gray: #343a40;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* ===================================
+   ACCOUNT CONTAINER
+   =================================== */
+.account-container {
+    padding: 2rem 0;
+    background-color: #ffffff; /* Changed from #fafafa to white */
+    min-height: 70vh;
+}
+
+/* ===================================
+   ACCOUNT SIDEBAR STYLING
+   =================================== */
+.account-sidebar .card {
+    border: 1px solid #e3e6f0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background-color: var(--white);
+    overflow: hidden;
+}
+
+.account-sidebar .card-header {
+    background-color: var(--white); /* Changed from #f8f9fc to white */
+    border-bottom: 1px solid #e3e6f0;
+    padding: 1.25rem;
+}
+
+.account-sidebar .card-header h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-family);
+}
+
+.account-sidebar .card-header p {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0;
+    line-height: 1.4;
+}
+
+/* Light gray divider line */
+.sidebar-divider {
+    border-bottom: 1px solid #e9ecef;
+    margin: 0;
+}
+
+.account-sidebar .list-group-item {
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid #f1f3f4;
+    background-color: var(--white);
+    color: #495057;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: var(--font-family);
+}
+
+.account-sidebar .list-group-item:first-child {
+    border-top: none;
+}
+
+.account-sidebar .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.account-sidebar .list-group-item:hover {
+    background-color: rgba(12, 92, 230, 0.05);
+    color: var(--primary-blue);
+}
+
+.account-sidebar .list-group-item.active {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: var(--white);
+    font-weight: 600;
+}
+
+.account-sidebar .list-group-item.active i {
+    color: var(--white) !important;
+}
+
+.account-sidebar .list-group-item i {
+    width: 16px;
+    text-align: center;
+}
+
+/* ===================================
+   MAIN CONTENT CARD
+   =================================== */
+.account-main-card {
+    border: 1px solid #e3e6f0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background-color: var(--white);
+    overflow: hidden;
+}
+
+.account-main-card .card-header {
+    background-color: var(--white); /* Changed from #f8f9fc to white */
+    border-bottom: 1px solid #e3e6f0;
+    padding: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.account-main-card .card-header h5 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    font-family: var(--font-family);
+}
+
+.account-main-card .card-body {
+    padding: 2rem;
+}
+
+/* ===================================
+   EDIT PROFILE BUTTON
+   =================================== */
+.btn-edit-profile {
+    background-color: var(--white);
+    border: 1px solid #dee2e6;
+    color: #495057;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-family: var(--font-family);
+}
+
+.btn-edit-profile:hover {
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    background-color: rgba(12, 92, 230, 0.05);
+}
+
+/* ===================================
+   PROFILE PICTURE STYLING
+   =================================== */
+.profile-picture-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-picture {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 3px solid #f8f9fc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ===================================
+   PROFILE INFORMATION GRID
+   =================================== */
+.profile-info-section {
+    margin-bottom: 2rem;
+}
+
+.profile-info-section .row {
+    row-gap: 1rem; /* Added gap between rows */
+}
+
+.profile-basic-info {
+    border-bottom: 1px solid #f1f3f4;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.profile-basic-info h4 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-family);
+}
+
+.member-since {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+.profile-field {
+    margin-bottom: 0; /* Removed bottom margin */
+}
+
+.field-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #6c757d;
+    margin-bottom: 0.1rem; /* Reduced from 0.25rem to 0.1rem */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: var(--font-family);
+}
+
+.field-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #2c3e50;
+    margin: 0;
+    font-family: var(--font-family);
+}
+
+.field-value.not-provided {
+    color: #adb5bd;
+    font-style: normal; /* Removed italic */
+}
+
+/* ===================================
+   ACCOUNT STATUS SECTION
+   =================================== */
+.account-status-section {
+    border-top: 1px solid #e9ecef;
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+}
+
+.status-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-family);
+}
+
+.status-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.status-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+}
+
+.status-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.status-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2c3e50;
+    text-transform: capitalize;
+}
+
+/* ===================================
+   APPLY AS SELLER BUTTON
+   =================================== */
+.apply-seller-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-apply-seller {
+    background-color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+    color: var(--white);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    font-family: var(--font-family);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-apply-seller:hover {
+    background-color: #0a4bc7;
+    border-color: #0a4bc7;
+    color: var(--white);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(12, 92, 230, 0.25);
+}
+
+/* ===================================
+   FORM STYLES (for edit profile and apply seller)
+   =================================== */
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-family: var(--font-family);
+}
+
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-family);
+}
+
+.form-control {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-family: var(--font-family);
+}
+
+.form-control:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.2rem rgba(12, 92, 230, 0.25);
+}
+
+.form-select {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-family: var(--font-family);
+}
+
+.form-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.2rem rgba(12, 92, 230, 0.25);
+}
+
+.btn-save {
+    background-color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+    color: var(--white);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    font-family: var(--font-family);
+}
+
+.btn-save:hover {
+    background-color: #0a4bc7;
+    border-color: #0a4bc7;
+    color: var(--white);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(12, 92, 230, 0.25);
+}
+
+.btn-cancel {
+    background-color: var(--white);
+    border: 1px solid #dee2e6;
+    color: #495057;
+    font-weight: 500;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    font-family: var(--font-family);
+}
+
+.btn-cancel:hover {
+    border-color: #adb5bd;
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+/* ===================================
+   RESPONSIVE STYLES
+   =================================== */
+
+/* Tablet Styles */
+@media (max-width: 992px) {
+    .account-container {
+        padding: 1.5rem 0;
+    }
+    
+    .account-main-card .card-body {
+        padding: 1.5rem;
+    }
+    
+    .status-info-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .apply-seller-section {
+        margin-top: 1rem;
+    }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .account-container {
+        padding: 1rem 0;
+    }
+    
+    .account-container .container {
+        padding-left: 1.5rem; /* Added padding for mobile */
+        padding-right: 1.5rem; /* Added padding for mobile */
+    }
+    
+    .account-sidebar {
+        margin-bottom: 2rem;
+    }
+    
+    .account-main-card .card-header {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .account-main-card .card-body {
+        padding: 1rem;
+    }
+    
+    .profile-basic-info {
+        text-align: center;
+    }
+    
+    .profile-picture {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .profile-basic-info h4 {
+        font-size: 1.3rem;
+    }
+    
+    .status-info-grid {
+        gap: 1rem;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 576px) {
+    .account-sidebar .card-header {
+        padding: 1rem;
+    }
+    
+    .account-sidebar .list-group-item {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .profile-picture {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .btn-apply-seller {
+        width: 100%;
+        justify-content: center;
+    }
+}
