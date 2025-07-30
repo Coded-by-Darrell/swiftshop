@@ -18,7 +18,7 @@ return [
     |
     */
 
-    'default' => env('LOG_CHANNEL', 'stack'),
+    'default' => env('LOG_CHANNEL', 'daily'), // Changed from 'stack' to 'daily'
 
     /*
     |--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return [
 
         'stack' => [
             'driver' => 'stack',
-            'channels' => explode(',', env('LOG_STACK', 'single')),
+            'channels' => explode(',', env('LOG_STACK', 'daily,emergency')), // Use daily by default
             'ignore_exceptions' => false,
         ],
 
@@ -68,8 +68,35 @@ return [
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
-            'level' => env('LOG_LEVEL', 'debug'),
-            'days' => env('LOG_DAILY_DAYS', 14),
+            'level' => env('LOG_LEVEL', 'info'), // Changed from 'debug' to 'info' for less verbose logs
+            'days' => env('LOG_DAILY_DAYS', 7), // Changed from 14 to 7 days for storage efficiency
+            'replace_placeholders' => true,
+        ],
+
+        // New: Production daily logs (less verbose)
+        'production' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => 'warning', // Only log warnings and above in production
+            'days' => 30, // Keep longer for production issues
+            'replace_placeholders' => true,
+        ],
+
+        // New: Development daily logs (more verbose)
+        'development' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => 'debug', // Full debugging for development
+            'days' => 3, // Keep shorter for development
+            'replace_placeholders' => true,
+        ],
+
+        // New: Error-only channel for critical issues
+        'errors' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/errors.log'),
+            'level' => 'error', // Only errors and critical
+            'days' => 30, // Keep errors longer
             'replace_placeholders' => true,
         ],
 

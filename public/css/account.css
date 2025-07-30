@@ -168,6 +168,59 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Profile Picture Upload Styles */
+.profile-picture-upload-section {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.profile-picture-preview {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 3px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.profile-picture-preview:hover {
+    border-color: var(--primary-blue);
+    box-shadow: 0 4px 12px rgba(12, 92, 230, 0.15);
+}
+
+.upload-info {
+    color: #6c757d;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.upload-info i {
+    color: var(--primary-blue);
+}
+
+/* File Input Styling */
+.form-control[type="file"] {
+    border: 2px dashed #dee2e6;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.form-control[type="file"]:hover {
+    border-color: var(--primary-blue);
+    background-color: rgba(12, 92, 230, 0.05);
+}
+
+.form-control[type="file"]:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.2rem rgba(12, 92, 230, 0.25);
+    background-color: rgba(12, 92, 230, 0.05);
+}
+
 /* ===================================
    PROFILE INFORMATION GRID
    =================================== */
@@ -419,6 +472,16 @@
     .apply-seller-section {
         margin-top: 1rem;
     }
+    
+    .profile-picture {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .profile-picture-preview {
+        width: 100px;
+        height: 100px;
+    }
 }
 
 /* Mobile Styles */
@@ -456,6 +519,11 @@
         height: 100px;
     }
     
+    .profile-picture-preview {
+        width: 100px;
+        height: 100px;
+    }
+    
     .profile-basic-info h4 {
         font-size: 1.3rem;
     }
@@ -477,6 +545,11 @@
     }
     
     .profile-picture {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .profile-picture-preview {
         width: 80px;
         height: 80px;
     }

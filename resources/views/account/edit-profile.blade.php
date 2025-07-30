@@ -59,9 +59,48 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('test.account.update-profile') }}" method="POST">
+                    <form action="{{ route('test.account.update-profile') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
+                        
+                        <!-- Profile Picture Section -->
+                        <div class="form-section">
+                            <h6 class="form-section-title">Profile Picture</h6>
+                            
+                            <div class="row align-items-center">
+                                <div class="col-md-3 text-center">
+                                    <div class="profile-picture-container mb-3">
+                                        <img src="{{ $user->profile_picture && Storage::disk('public')->exists($user->profile_picture) 
+                                                    ? Storage::url($user->profile_picture) 
+                                                    : asset('images/default-profile-pic.jpg') }}" 
+                                             alt="Profile Picture" 
+                                             class="rounded-circle profile-picture"
+                                             id="profile-picture-preview">
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="mb-3">
+                                        <label for="profile_picture" class="form-label">Change Profile Picture</label>
+                                        <input type="file" 
+                                               class="form-control @error('profile_picture') is-invalid @enderror" 
+                                               id="profile_picture" 
+                                               name="profile_picture" 
+                                               accept="image/jpeg,image/jpg,image/png"
+                                               onchange="previewProfilePicture(this)">
+                                        <div class="form-text">
+                                            <small>
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                Supported formats: JPEG, JPG, PNG. Maximum size: 2MB. 
+                                                Image will be automatically resized to 300x300 pixels.
+                                            </small>
+                                        </div>
+                                        @error('profile_picture')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         
                         <!-- Basic Information Section -->
                         <div class="form-section">
@@ -172,4 +211,18 @@
         </div>
     </div>
 </div>
+
+<script>
+function previewProfilePicture(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            document.getElementById('profile-picture-preview').src = e.target.result;
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 @endsection

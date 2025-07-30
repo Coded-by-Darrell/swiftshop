@@ -52,12 +52,21 @@
                 </div>
                 
                 <div class="card-body">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+                    
                     <!-- Profile Picture and Basic Info -->
                     <div class="profile-basic-info">
                         <div class="row align-items-center">
                             <div class="col-md-3 text-center">
                                 <div class="profile-picture-container mb-3">
-                                    <img src="{{ asset('images/default-profile-pic.jpg') }}" 
+                                    <img src="{{ $user->profile_picture && Storage::disk('public')->exists($user->profile_picture) 
+                                                ? Storage::url($user->profile_picture) 
+                                                : asset('images/default-profile-pic.jpg') }}" 
                                          alt="Profile Picture" 
                                          class="rounded-circle profile-picture">
                                 </div>

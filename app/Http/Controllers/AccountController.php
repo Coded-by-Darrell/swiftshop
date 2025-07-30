@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AccountController extends Controller
 {
@@ -41,16 +42,110 @@ class AccountController extends Controller
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|in:male,female,other',
             'bio' => 'nullable|string|max:500',
+            'profile_picture' => 'nullable|image|mimes:jpeg,jpg,png|max:2048', // 2MB max
         ]);
         
-        $user->update([
+        $updateData = [
             'name' => $request->name,
             'email' => $request->email,
             // Note: These fields don't exist in your users table yet
             // You'll need to add them via migration if you want to store them
-        ]);
+        ];
+        
+        // Handle profile picture upload
+        if ($request->hasFile('profile_picture')) {
+            $profilePicture = $this->handleProfilePictureUpload($request->file('profile_picture'), $user);
+            $updateData['profile_picture'] = $profilePicture;
+        }
+        
+        $user->update($updateData);
         
         return redirect()->route('test.account.profile')->with('success', 'Profile updated successfully!');
+    }
+    
+    /**
+     * Handle profile picture upload and processing (Using PHP GD Library)
+     */
+    private function handleProfilePictureUpload($file, $user)
+    {
+        // Delete old profile picture if exists
+        if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+            Storage::disk('public')->delete($user->profile_picture);
+        }
+        
+        // Generate unique filename
+        $filename = 'profile_' . $user->id . '_' . time() . '.jpg'; // Always save as JPG
+        $path = 'profile-pictures/' . $filename;
+        
+        // Create directory if it doesn't exist
+        Storage::disk('public')->makeDirectory('profile-pictures');
+        
+        // Process and resize image using PHP GD
+        $this->resizeImage($file->getPathname(), Storage::disk('public')->path($path), 300, 300);
+        
+        return $path;
+    }
+    
+    /**
+     * Resize image using PHP GD library
+     */
+    private function resizeImage($sourcePath, $destinationPath, $newWidth, $newHeight)
+    {
+        // Get original image info
+        list($originalWidth, $originalHeight, $imageType) = getimagesize($sourcePath);
+        
+        // Create image resource from original
+        switch ($imageType) {
+            case IMAGETYPE_JPEG:
+                $originalImage = imagecreatefromjpeg($sourcePath);
+                break;
+            case IMAGETYPE_PNG:
+                $originalImage = imagecreatefrompng($sourcePath);
+                break;
+            case IMAGETYPE_GIF:
+                $originalImage = imagecreatefromgif($sourcePath);
+                break;
+            default:
+                throw new \Exception('Unsupported image type');
+        }
+        
+        // Calculate crop dimensions for square aspect ratio
+        $cropSize = min($originalWidth, $originalHeight);
+        $cropX = ($originalWidth - $cropSize) / 2;
+        $cropY = ($originalHeight - $cropSize) / 2;
+        
+        // Create new image
+        $newImage = imagecreatetruecolor($newWidth, $newHeight);
+        
+        // Enable alpha blending for PNG transparency
+        imagealphablending($newImage, false);
+        imagesavealpha($newImage, true);
+        
+        // Resize and crop image
+        imagecopyresampled(
+            $newImage, $originalImage,
+            0, 0, $cropX, $cropY,
+            $newWidth, $newHeight, $cropSize, $cropSize
+        );
+        
+        // Save the new image as JPEG
+        imagejpeg($newImage, $destinationPath, 90); // 90% quality
+        
+        // Clean up memory
+        imagedestroy($originalImage);
+        imagedestroy($newImage);
+    }
+    
+    /**
+     * Get user's profile picture URL
+     */
+    public function getProfilePictureUrl($user)
+    {
+        if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+            return Storage::url($user->profile_picture);
+        }
+        
+        return asset('images/default-profile-pic.jpg');
     }
     
     /**
