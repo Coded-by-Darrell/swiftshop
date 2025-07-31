@@ -14,6 +14,8 @@
     <!-- SwiftShop CSS -->
     <link rel="stylesheet" href="{{ asset('css/browse.css') }}">
     <link rel="stylesheet" href="{{ asset('css/account.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/order-history.css') }}">
+    @stack('styles')
 </head>
 <body>
    
@@ -42,8 +44,8 @@
                             <span class="d-none d-sm-inline">{{ Auth::user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Manage Account</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-history me-2"></i>Order History</a></li>
+                            <li><a class="dropdown-item" href="{{ route('test.account.profile') }}"><i class="fas fa-user me-2"></i>Manage Account</a></li>
+                            <li><a class="dropdown-item" href="{{ route('test.account.order-history') }}"><i class="fas fa-history me-2"></i>Order History</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}" id="logout-form">
@@ -143,8 +145,13 @@
         </div>
     </footer>
     
-    <!-- Add Bootstrap JS CDN here -->
-    <script src="{{ asset('js/cart.js') }}"></script>
+    <!-- Bootstrap JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    
+    <!-- Common JS -->
+    <script src="{{ asset('js/cart.js') }}"></script>
+    
+    <!-- Page specific scripts -->
+    @stack('scripts')
 </body>
 </html>

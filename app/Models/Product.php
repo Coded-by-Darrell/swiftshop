@@ -25,6 +25,11 @@ class Product extends Model
         'price' => 'decimal:2'
     ];
 
+    public function images()
+{
+    return $this->hasMany(ProductImage::class);
+}
+
     // Relationship: Product belongs to Vendor
     public function vendor()
     {

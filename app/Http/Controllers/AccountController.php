@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Order;
+use App\Models\OrderItem;
 
 class AccountController extends Controller
 {
@@ -188,10 +190,130 @@ class AccountController extends Controller
     /**
      * Show order history page
      */
-    public function orderHistory()
+    public function orderHistory(Request $request)
     {
-        // We'll implement this later
-        return view('account.order-history');
+        $user = Auth::user();
+        
+        // Get filter parameters
+        $status = $request->get('status', 'all');
+        $search = $request->get('search', '');
+        
+        // Build query
+        $query = Order::where('user_id', $user->id)
+                     ->with(['orderItems.product', 'orderItems.vendor'])
+                     ->orderBy('created_at', 'desc');
+        
+        // Apply status filter
+        if ($status !== 'all') {
+            $query->where('status', $status);
+        }
+        
+        // Apply search filter
+        if (!empty($search)) {
+            $query->where(function($q) use ($search) {
+                $q->where('order_number', 'LIKE', "%{$search}%")
+                  ->orWhereHas('orderItems', function($orderItemQuery) use ($search) {
+                      $orderItemQuery->where('vendor_name', 'LIKE', "%{$search}%")
+                                   ->orWhere('product_name', 'LIKE', "%{$search}%");
+                  });
+            });
+        }
+        
+        // Paginate results
+        $orders = $query->paginate(10)->withQueryString();
+        
+        // Get status counts for tabs
+        $statusCounts = $this->getStatusCounts($user->id);
+        
+        // Handle AJAX requests
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'html' => view('account.partials.order-list', compact('orders'))->render(),
+                'pagination' => $orders->links()->toHtml()
+            ]);
+        }
+        
+        return view('account.order-history', compact('orders', 'statusCounts', 'status', 'search'));
+    }
+    
+    /**
+     * Get count of orders by status
+     */
+    private function getStatusCounts($userId)
+    {
+        $baseQuery = Order::where('user_id', $userId);
+        
+        return [
+            'all' => $baseQuery->count(),
+            'pending' => $baseQuery->where('status', 'pending')->count(),
+            'processing' => $baseQuery->where('status', 'processing')->count(),
+            'delivered' => $baseQuery->where('status', 'delivered')->count(),
+            'cancelled' => $baseQuery->where('status', 'cancelled')->count(),
+        ];
+    }
+    
+    /**
+     * Show order details
+     */
+    public function showOrder($orderId)
+    {
+        $user = Auth::user();
+        
+        $order = Order::where('user_id', $user->id)
+                     ->where('id', $orderId)
+                     ->with(['orderItems.product', 'orderItems.vendor'])
+                     ->firstOrFail();
+        
+        return view('account.order-details', compact('order'));
+    }
+    /**
+     * Mark order as received (for delivered orders)
+     */
+    public function markAsReceived(Request $request, $orderId)
+    {
+        $user = Auth::user();
+        
+        $order = Order::where('user_id', $user->id)
+                     ->where('id', $orderId)
+                     ->where('status', 'delivered')
+                     ->firstOrFail();
+        
+        // You can add a 'received_at' column to orders table if needed
+        // For now, we'll just return a success response
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Order marked as received! Thank you for your confirmation.'
+        ]);
+    }
+    
+    /**
+     * Cancel order (only for pending/processing orders)
+     */
+    public function cancelOrder(Request $request, $orderId)
+    {
+        $user = Auth::user();
+        
+        $order = Order::where('user_id', $user->id)
+                     ->where('id', $orderId)
+                     ->whereIn('status', ['pending', 'processing'])
+                     ->firstOrFail();
+        
+        $order->update(['status' => 'cancelled']);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Order cancelled successfully!'
+        ]);
+    }
+    
+    /**
+     * AJAX search for orders (separate endpoint for better organization)
+     */
+    public function searchOrders(Request $request)
+    {
+        return $this->orderHistory($request);
     }
     
     /**

@@ -146,8 +146,14 @@ Route::prefix('test-account')->name('test.account.')->group(function () {
     Route::get('/edit-profile', [App\Http\Controllers\AccountController::class, 'editProfile'])->name('edit-profile');
     Route::put('/update-profile', [App\Http\Controllers\AccountController::class, 'updateProfile'])->name('update-profile');
     
-    // Other account pages (we'll implement these later)
+    // Order history routes
     Route::get('/order-history', [App\Http\Controllers\AccountController::class, 'orderHistory'])->name('order-history');
+    Route::get('/order-history/search', [App\Http\Controllers\AccountController::class, 'searchOrders'])->name('order-history.search');
+    Route::get('/order-history/{orderId}', [App\Http\Controllers\AccountController::class, 'showOrder'])->name('order-history.show');
+    Route::post('/order-history/{orderId}/mark-received', [App\Http\Controllers\AccountController::class, 'markAsReceived'])->name('order-history.mark-received');
+    Route::post('/order-history/{orderId}/cancel', [App\Http\Controllers\AccountController::class, 'cancelOrder'])->name('order-history.cancel');
+    
+    // Other account pages (we'll implement these later)
     Route::get('/address-book', [App\Http\Controllers\AccountController::class, 'addressBook'])->name('address-book');
     Route::get('/notifications', [App\Http\Controllers\AccountController::class, 'notifications'])->name('notifications');
     Route::get('/settings', [App\Http\Controllers\AccountController::class, 'accountSettings'])->name('settings');
