@@ -57,4 +57,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(VendorReview::class);
     }
+
+    public function addresses()
+{
+    return $this->hasMany(Address::class)->orderBy('is_default', 'desc')->orderBy('created_at', 'desc');
+}
+
+public function getDefaultAddress()
+{
+    return $this->addresses()->where('is_default', true)->first();
+}
 }

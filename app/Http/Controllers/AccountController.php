@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Order;
+use App\Models\Address;
 use App\Models\OrderItem;
 
 class AccountController extends Controller
@@ -320,10 +321,12 @@ class AccountController extends Controller
      * Show address book page
      */
     public function addressBook()
-    {
-        // We'll implement this later
-        return view('account.address-book');
-    }
+{
+    $user = Auth::user();
+    $addresses = Address::getUserAddresses($user->id);
+    
+    return view('account.address-book', compact('addresses'));
+}
     
     /**
      * Show notifications page
@@ -342,4 +345,129 @@ class AccountController extends Controller
         // We'll implement this later (includes security settings)
         return view('account.account-settings');
     }
+
+    public function storeAddress(Request $request)
+    {
+        $user = Auth::user();
+        
+        $request->validate([
+            'label' => 'required|string|max:255',
+            'full_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'address_line_1' => 'required|string|max:500',
+            'address_line_2' => 'nullable|string|max:500',
+            'city' => 'required|string|max:255',
+            'postal_code' => 'required|string|max:20',
+            'is_default' => 'boolean'
+        ]);
+        
+        if ($request->boolean('is_default')) {
+            Address::where('user_id', $user->id)->update(['is_default' => false]);
+        }
+        
+        $address = Address::create([
+            'user_id' => $user->id,
+            'label' => $request->label,
+            'full_name' => $request->full_name,
+            'phone' => $request->phone,
+            'address_line_1' => $request->address_line_1,
+            'address_line_2' => $request->address_line_2,
+            'city' => $request->city,
+            'postal_code' => $request->postal_code,
+            'country' => $request->country ?? 'Philippines',
+            'is_default' => $request->boolean('is_default')
+        ]);
+        
+        if (Address::where('user_id', $user->id)->count() === 1) {
+            $address->update(['is_default' => true]);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Address added successfully!'
+        ]);
+    }
+
+    public function getAddress($addressId)
+    {
+        $user = Auth::user();
+        
+        $address = Address::where('user_id', $user->id)
+                        ->where('id', $addressId)
+                        ->firstOrFail();
+        
+        return response()->json([
+            'success' => true,
+            'address' => $address
+        ]);
+    }
+
+    public function updateAddress(Request $request, $addressId)
+{
+    $user = Auth::user();
+    
+    $address = Address::where('user_id', $user->id)
+                     ->where('id', $addressId)
+                     ->firstOrFail();
+    
+    $request->validate([
+        'label' => 'required|string|max:255',
+        'full_name' => 'required|string|max:255',
+        'phone' => 'required|string|max:20',
+        'address_line_1' => 'required|string|max:500',
+        'address_line_2' => 'nullable|string|max:500',
+        'city' => 'required|string|max:255',
+        'postal_code' => 'required|string|max:20',
+        'is_default' => 'boolean'
+    ]);
+    
+    if ($request->boolean('is_default')) {
+        Address::where('user_id', $user->id)
+               ->where('id', '!=', $addressId)
+               ->update(['is_default' => false]);
+    }
+    
+    $address->update($request->only([
+        'label', 'full_name', 'phone', 'address_line_1', 
+        'address_line_2', 'city', 'postal_code', 'is_default'
+    ]));
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Address updated successfully!'
+    ]);
+}
+
+public function deleteAddress($addressId)
+{
+    $user = Auth::user();
+    
+    $address = Address::where('user_id', $user->id)
+                     ->where('id', $addressId)
+                     ->firstOrFail();
+    
+    if ($address->is_default && Address::where('user_id', $user->id)->count() === 1) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Cannot delete your only address.'
+        ]);
+    }
+    
+    if ($address->is_default) {
+        $nextAddress = Address::where('user_id', $user->id)
+                             ->where('id', '!=', $addressId)
+                             ->first();
+        if ($nextAddress) {
+            $nextAddress->update(['is_default' => true]);
+        }
+    }
+    
+    $address->delete();
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Address deleted successfully!'
+    ]);
+}
+
 }

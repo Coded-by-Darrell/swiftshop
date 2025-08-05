@@ -153,8 +153,13 @@ Route::prefix('test-account')->name('test.account.')->group(function () {
     Route::post('/order-history/{orderId}/mark-received', [App\Http\Controllers\AccountController::class, 'markAsReceived'])->name('order-history.mark-received');
     Route::post('/order-history/{orderId}/cancel', [App\Http\Controllers\AccountController::class, 'cancelOrder'])->name('order-history.cancel');
     
+    // Address management routes
+    Route::post('/address', [App\Http\Controllers\AccountController::class, 'storeAddress'])->name('address.store');
+    Route::get('/address/{id}', [App\Http\Controllers\AccountController::class, 'getAddress'])->name('address.get');
+    Route::put('/address/{id}', [App\Http\Controllers\AccountController::class, 'updateAddress'])->name('address.update');
+    Route::delete('/address/{id}', [App\Http\Controllers\AccountController::class, 'deleteAddress'])->name('address.delete');
+
     // Other account pages (we'll implement these later)
-    Route::get('/address-book', [App\Http\Controllers\AccountController::class, 'addressBook'])->name('address-book');
     Route::get('/notifications', [App\Http\Controllers\AccountController::class, 'notifications'])->name('notifications');
     Route::get('/settings', [App\Http\Controllers\AccountController::class, 'accountSettings'])->name('settings');
 });

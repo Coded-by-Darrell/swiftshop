@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Address;
 use App\Models\ProductVariant;
 
 class CheckoutController extends Controller
@@ -526,7 +527,27 @@ private function getSavedAddresses()
         return $sessionAddresses;
     }
     
-    // Return default addresses with email included
+    // If user is logged in, get real addresses from database
+    if (Auth::check()) {
+        $addresses = Address::getUserAddresses(Auth::id());
+        
+        // Convert to the same format as dummy addresses
+        return $addresses->map(function($address) {
+            return [
+                'id' => $address->id,
+                'label' => $address->label,
+                'full_name' => $address->full_name,
+                'phone_number' => $address->phone,
+                'email' => Auth::user()->email, // Keep email from user account
+                'street_address' => $address->address_line_1 . ($address->address_line_2 ? ', ' . $address->address_line_2 : ''),
+                'city' => $address->city,
+                'postal_code' => $address->postal_code,
+                'is_default' => $address->is_default
+            ];
+        })->toArray();
+    }
+    
+    // Fallback to dummy data for guests (keep original dummy data)
     return [
         [
             'id' => 1,

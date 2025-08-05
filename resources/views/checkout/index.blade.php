@@ -48,38 +48,56 @@
                         
                         <!-- Saved Addresses -->
                         <div class="saved-addresses">
-                            @foreach($savedAddresses as $address)
-                                <div class="address-option {{ $address['is_default'] ? 'selected' : '' }}" 
-                                    onclick="selectAddress({{ $address['id'] }})"
-                                    data-full-name="{{ $address['full_name'] }}"
-                                    data-phone="{{ $address['phone_number'] }}"
-                                    {{-- data-email="{{ $address['email'] ?? ''}}" --}}
-                                    data-street="{{ $address['street_address'] }}"
-                                    data-city="{{ $address['city'] }}"
-                                    data-postal="{{ $address['postal_code'] }}">
-                                    <input type="radio" name="delivery_address" value="{{ $address['id'] }}" 
-                                        {{ $address['is_default'] ? 'checked' : '' }} style="display: none;">
-                                    <div class="address-label">
-                                        {{ $address['label'] }}
-                                        @if($address['is_default'])
-                                            <span class="badge bg-primary ms-2">Default</span>
-                                        @endif
+                            @if(count($savedAddresses) > 0)
+                                @foreach($savedAddresses as $address)
+                                    <div class="address-option {{ $address['is_default'] ? 'selected' : '' }}" 
+                                        onclick="selectAddress({{ $address['id'] }})"
+                                        data-full-name="{{ $address['full_name'] }}"
+                                        data-phone="{{ $address['phone_number'] }}"
+                                        data-street="{{ $address['street_address'] }}"
+                                        data-city="{{ $address['city'] }}"
+                                        data-postal="{{ $address['postal_code'] }}">
+                                        <input type="radio" name="delivery_address" value="{{ $address['id'] }}" 
+                                            {{ $address['is_default'] ? 'checked' : '' }} style="display: none;">
+                                        <div class="address-label">
+                                            {{ $address['label'] }}
+                                            @if($address['is_default'])
+                                                <span class="badge bg-primary ms-2">Default</span>
+                                            @endif
+                                        </div>
+                                        <p class="address-details">
+                                            {{ $address['full_name'] }}<br>
+                                            {{ $address['street_address'] }}<br>
+                                            {{ $address['city'] }}, {{ $address['postal_code'] }}<br>
+                                            <small class="text-muted"><i class="fas fa-phone me-1"></i>{{ $address['phone_number'] }}</small>
+                                        </p>
                                     </div>
-                                    <p class="address-details">
-                                        {{ $address['full_name'] }}<br>
-                                        {{ $address['street_address'] }}<br>
-                                        {{ $address['city'] }}, {{ $address['postal_code'] }}
-                                    </p>
-                                </div>
-                            @endforeach
+                                @endforeach
+        
+                                <!-- Link to Address Book for authenticated users -->
+                                @auth
+                                    <div class="text-center mt-3">
+                                        <a href="{{ route('test.account.address-book') }}" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-edit me-2"></i>Manage Addresses
+                                        </a>
+                                    </div>
+                                @endauth
+                            @else
+                                @auth
+                                    <!-- No addresses for logged in user -->
+                                    <div class="no-addresses-prompt text-center py-4">
+                                        <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
+                                        <h6 class="text-muted">No saved addresses found</h6>
+                                        <p class="text-muted mb-3">Please add an address to continue</p>
+                                        <a href="{{ route('test.account.address-book') }}" class="btn btn-primary">
+                                            <i class="fas fa-plus me-2"></i>Add Address
+                                        </a>
+                                    </div>
+                                @endauth
+                            @endif
                         </div>
                         
-                        <!-- New Address Toggle -->
-                        <div class="text-center">
-                            <button type="button" class="btn btn-outline-primary" onclick="toggleNewAddress()">
-                                <i class="fas fa-plus me-2"></i>Add New Address
-                            </button>
-                        </div>
+                       
                         
                        <!-- New Address Form (Hidden by default) -->
                         <div id="new-address-form" style="display: none;" class="mt-3">
