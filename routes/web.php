@@ -159,9 +159,25 @@ Route::prefix('test-account')->name('test.account.')->group(function () {
     Route::put('/address/{id}', [App\Http\Controllers\AccountController::class, 'updateAddress'])->name('address.update');
     Route::delete('/address/{id}', [App\Http\Controllers\AccountController::class, 'deleteAddress'])->name('address.delete');
 
-    // Other account pages (we'll implement these later)
-    Route::get('/notifications', [App\Http\Controllers\AccountController::class, 'notifications'])->name('notifications');
-    Route::get('/settings', [App\Http\Controllers\AccountController::class, 'accountSettings'])->name('settings');
+    Route::post('/change-password', [App\Http\Controllers\AccountController::class, 'changePassword'])->name('change-password');
+    Route::post('/terminate-session', [App\Http\Controllers\AccountController::class, 'terminateSession'])->name('terminate-session');
+});
+
+// Test Wishlist Routes (Public for development phase)
+Route::prefix('test-wishlist')->name('test.wishlist.')->group(function () {
+    // Wishlist display page
+    Route::get('/', [App\Http\Controllers\WishlistController::class, 'index'])->name('index');
+    
+    // Wishlist AJAX operations
+    Route::post('/add', [App\Http\Controllers\WishlistController::class, 'add'])->name('add');
+    Route::delete('/remove', [App\Http\Controllers\WishlistController::class, 'remove'])->name('remove');
+    Route::post('/toggle', [App\Http\Controllers\WishlistController::class, 'toggle'])->name('toggle');
+    
+    // Get wishlist count for navbar badge (if needed later)
+    Route::get('/count', [App\Http\Controllers\WishlistController::class, 'getWishlistCount'])->name('count');
+    
+    // Check if product is in wishlist
+    Route::post('/check-status', [App\Http\Controllers\WishlistController::class, 'checkStatus'])->name('check-status');
 });
 
 require __DIR__.'/auth.php';

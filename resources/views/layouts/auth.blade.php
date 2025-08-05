@@ -46,18 +46,17 @@
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge" style="display: none;">0</span>
                         </a>
                         
+            
                         <!-- User Dropdown -->
                         <div class="dropdown user-dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user-circle fa-lg me-1"></i>
-                                <span class="d-none d-sm-inline">{{ $userAccount->name }}</span>
+                                <span class="d-none d-sm-inline">{{ Auth::user()->name }}</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Manage Account</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-history me-2"></i>Order History</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-heart me-2"></i>Wishlist</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <!-- Fixed: Proper logout form -->
+                                <li><a class="dropdown-item" href="{{ route('test.account.profile') }}"><i class="fas fa-user me-2"></i>Manage Account</a></li>
+                                <li><a class="dropdown-item" href="{{ route('test.account.order-history') }}"><i class="fas fa-history me-2"></i>Order History</a></li>
+                                <li><a class="dropdown-item" href="{{ route('test.wishlist.index') }}"><i class="fas fa-heart me-2"></i>Wishlist</a></li>                                <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" id="logout-form">
                                         @csrf

@@ -67,4 +67,28 @@ public function getDefaultAddress()
 {
     return $this->addresses()->where('is_default', true)->first();
 }
+
+/**
+ * Get the user's wishlist items
+ */
+public function wishlistItems()
+{
+    return $this->hasMany(WishlistItem::class);
+}
+
+/**
+ * Get the user's wishlist products
+ */
+public function wishlistProducts()
+{
+    return $this->belongsToMany(Product::class, 'wishlist_items')->withTimestamps();
+}
+
+/**
+ * Check if user has product in wishlist
+ */
+public function hasInWishlist($productId)
+{
+    return $this->wishlistItems()->where('product_id', $productId)->exists();
+}
 }

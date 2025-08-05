@@ -46,7 +46,7 @@
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="{{ route('test.account.profile') }}"><i class="fas fa-user me-2"></i>Manage Account</a></li>
                             <li><a class="dropdown-item" href="{{ route('test.account.order-history') }}"><i class="fas fa-history me-2"></i>Order History</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ route('test.wishlist.index') }}"><i class="fas fa-heart me-2"></i>Wishlist</a></li>                            <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}" id="logout-form">
                                     @csrf

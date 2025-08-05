@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;  // Add this line
+use Illuminate\Support\Facades\DB;    // Add this line
 use App\Models\Order;
 use App\Models\Address;
 use App\Models\OrderItem;
+use Jenssegers\Agent\Agent;           // Add this line
+use Exception;    
 
 class AccountController extends Controller
 {
@@ -337,14 +341,6 @@ class AccountController extends Controller
         return view('account.notifications');
     }
     
-    /**
-     * Show account settings page
-     */
-    public function accountSettings()
-    {
-        // We'll implement this later (includes security settings)
-        return view('account.account-settings');
-    }
 
     public function storeAddress(Request $request)
     {
@@ -467,6 +463,188 @@ public function deleteAddress($addressId)
     return response()->json([
         'success' => true,
         'message' => 'Address deleted successfully!'
+    ]);
+}
+
+/**
+ * Show account settings page
+ */
+public function accountSettings()
+{
+    $user = Auth::user();
+    $loginActivities = $this->getLoginActivities($user);
+    
+    return view('account.account-settings', compact('loginActivities'));
+}
+
+/**
+ * Change user password
+ */
+public function changePassword(Request $request)
+{
+    $request->validate([
+        'current_password' => 'required',
+        'new_password' => 'required|min:8|confirmed',
+        'new_password_confirmation' => 'required',
+    ]);
+
+    $user = Auth::user();
+
+    // Check if current password is correct
+    if (!Hash::check($request->current_password, $user->password)) {
+        return back()->withErrors(['current_password' => 'The current password is incorrect.']);
+    }
+
+    // Update password
+    $user->update([
+        'password' => Hash::make($request->new_password)
+    ]);
+
+    return back()->with('success', 'Password changed successfully!');
+}
+
+/**
+ * Get user real login activities from sessions table
+ */
+private function getLoginActivities($user)
+{
+    $sessions = DB::table('sessions')
+                 ->where('user_id', $user->id)
+                 ->orderBy('last_activity', 'desc')
+                 ->get();
+
+    $activities = [];
+    $currentSessionId = session()->getId();
+
+    foreach ($sessions as $session) {
+        $isCurrentSession = $session->id === $currentSessionId;
+        
+        $activities[] = [
+            'session_id' => $session->id,
+            'device' => $this->getDeviceInfo($session->user_agent ?? ''),
+            'device_icon' => $this->getDeviceIcon($session->user_agent ?? ''),
+            'location' => $this->getLocationFromIP($session->ip_address),
+            'ip_address' => $session->ip_address,
+            'login_time' => $this->formatLoginTime($session->last_activity),
+            'is_current' => $isCurrentSession,
+        ];
+    }
+
+    return collect($activities);
+}
+
+/**
+ * Get device info from user agent
+ */
+private function getDeviceInfo($userAgent)
+{
+    if (empty($userAgent)) {
+        return 'Unknown Device';
+    }
+
+    $agent = new Agent();
+    $agent->setUserAgent($userAgent);
+    
+    $browser = $agent->browser() ?: 'Unknown Browser';
+    $platform = $agent->platform() ?: 'Unknown OS';
+    $device = $agent->device() ?: '';
+    
+    if ($device && $device !== 'WebKit') {
+        return "{$browser} on {$device}";
+    }
+    
+    return "{$browser} on {$platform}";
+}
+
+/**
+ * Get device icon from user agent
+ */
+private function getDeviceIcon($userAgent)
+{
+    if (empty($userAgent)) {
+        return 'desktop';
+    }
+
+    $agent = new Agent();
+    $agent->setUserAgent($userAgent);
+    
+    if ($agent->isMobile()) {
+        return 'mobile-alt';
+    } elseif ($agent->isTablet()) {
+        return 'tablet-alt';
+    } else {
+        return 'desktop';
+    }
+}
+
+/**
+ * Get location from IP address
+ */
+private function getLocationFromIP($ip)
+{
+    // For local development, return default location
+    if ($ip === '127.0.0.1' || $ip === '::1' || str_starts_with($ip, '192.168.')) {
+        return 'Batangas, Philippines';
+    }
+    
+    try {
+        // Use a free IP geolocation service
+        $response = @file_get_contents("http://ip-api.com/json/{$ip}");
+        if ($response) {
+            $data = json_decode($response, true);
+            
+            if ($data && $data['status'] === 'success') {
+                return $data['city'] . ', ' . $data['country'];
+            }
+        }
+    } catch (Exception $e) {
+        // Fallback if service fails
+    }
+    
+    return 'Unknown location';
+}
+
+/**
+ * Format login time
+ */
+private function formatLoginTime($timestamp)
+{
+    $loginTime = \Carbon\Carbon::createFromTimestamp($timestamp)->setTimezone('Asia/Manila');
+    $now = now()->setTimezone('Asia/Manila');
+    
+    if ($loginTime->isToday()) {
+        return 'Today at ' . $loginTime->format('g:i A');
+    } elseif ($loginTime->isYesterday()) {
+        return 'Yesterday at ' . $loginTime->format('g:i A');
+    } elseif ($loginTime->diffInDays($now) <= 7) {
+        return $loginTime->diffInDays($now) . ' days ago at ' . $loginTime->format('g:i A');
+    } else {
+        return $loginTime->format('M j, Y \a\t g:i A');
+    }
+}
+
+/**
+ * Terminate a session
+ */
+public function terminateSession(Request $request)
+{
+    $sessionId = $request->session_id;
+    $currentSessionId = session()->getId();
+    
+    // Don't allow terminating current session
+    if ($sessionId === $currentSessionId) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Cannot terminate your current session!'
+        ]);
+    }
+    
+    // Delete the session from database
+    DB::table('sessions')->where('id', $sessionId)->delete();
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Session terminated successfully!'
     ]);
 }
 

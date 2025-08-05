@@ -28,10 +28,7 @@
                         <i class="fas fa-map-marker-alt me-2"></i>
                         Address Book
                     </a>
-                    <a href="{{ route('test.account.notifications') }}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-bell me-2"></i>
-                        Notifications
-                    </a>
+                    
                     <a href="{{ route('test.account.settings') }}" class="list-group-item list-group-item-action">
                         <i class="fas fa-cog me-2"></i>
                         Account Settings

@@ -422,3 +422,162 @@ document.addEventListener('DOMContentLoaded', function() {
     updateQuantityDisplay();
 });
 
+function initWishlistToggle() {
+    const wishlistBtn = document.querySelector('.wishlist-btn');
+    
+    if (!wishlistBtn) return;
+    
+    // Check initial wishlist status when page loads
+    checkWishlistStatus();
+    
+    wishlistBtn.addEventListener('click', function() {
+        const productId = getProductId();
+        
+        // Add loading state
+        this.disabled = true;
+        const originalHtml = this.innerHTML;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        // Send AJAX request to toggle wishlist
+        fetch('/test-wishlist/toggle', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                product_id: productId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const icon = this.querySelector('i');
+                
+                if (data.action === 'added') {
+                    // Added to wishlist
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    this.classList.add('active');
+                    this.setAttribute('title', 'Remove from wishlist');
+                } else {
+                    // Removed from wishlist
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    this.classList.remove('active');
+                    this.setAttribute('title', 'Add to wishlist');
+                }
+                
+                // Show notification
+                showNotification(data.message, 'success');
+                
+                // Add visual feedback
+                this.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            } else {
+                showNotification(data.message || 'Failed to update wishlist', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('An error occurred. Please try again.', 'error');
+        })
+        .finally(() => {
+            // Remove loading state
+            this.disabled = false;
+            this.innerHTML = originalHtml;
+        });
+    });
+}
+
+/**
+ * Check if current product is in wishlist and update button state
+ */
+function checkWishlistStatus() {
+    const wishlistBtn = document.querySelector('.wishlist-btn');
+    const productId = getProductId();
+    
+    if (!wishlistBtn || !productId) return;
+    
+    fetch('/test-wishlist/check-status', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            product_id: productId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const icon = wishlistBtn.querySelector('i');
+        
+        if (data.in_wishlist) {
+            // Product is in wishlist
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+            wishlistBtn.classList.add('active');
+            wishlistBtn.setAttribute('title', 'Remove from wishlist');
+        } else {
+            // Product is not in wishlist
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            wishlistBtn.classList.remove('active');
+            wishlistBtn.setAttribute('title', 'Add to wishlist');
+        }
+    })
+    .catch(error => {
+        console.error('Error checking wishlist status:', error);
+    });
+}
+
+// Add wishlist styles for the product detail page
+const wishlistStyles = `
+<style>
+.wishlist-btn {
+    border: 1px solid #dee2e6;
+    background: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.wishlist-btn:hover {
+    border-color: #0C5CE6;
+    background: #f8f9fa;
+    transform: translateY(-1px);
+}
+
+.wishlist-btn.active {
+    border-color: #dc3545;
+    background: #dc3545;
+    color: white;
+}
+
+.wishlist-btn.active:hover {
+    background: #c82333;
+    border-color: #c82333;
+}
+
+.wishlist-btn i {
+    font-size: 18px;
+    transition: all 0.2s ease;
+}
+
+.wishlist-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+</style>
+`;
+
+// Inject wishlist styles
+document.head.insertAdjacentHTML('beforeend', wishlistStyles);
+
