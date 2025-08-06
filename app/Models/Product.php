@@ -190,5 +190,12 @@ class Product extends Model
         return $this->getDisplayPrice(); // Since this already handles discounts via variants
     }
 
+    public function scopeFromActiveStores($query)
+{
+    return $query->whereHas('vendor', function($vendorQuery) {
+        $vendorQuery->where('store_active', true);
+    });
+}
+
     
 }

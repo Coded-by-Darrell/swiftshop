@@ -180,4 +180,14 @@ Route::prefix('test-wishlist')->name('test.wishlist.')->group(function () {
     Route::post('/check-status', [App\Http\Controllers\WishlistController::class, 'checkStatus'])->name('check-status');
 });
 
+// Add these lines in your test account routes section:
+Route::prefix('test-seller')->name('test.seller.')->group(function () {
+    Route::get('/overview', [App\Http\Controllers\SellerController::class, 'overview'])->name('overview');
+    Route::post('/toggle-store-status', [App\Http\Controllers\SellerController::class, 'toggleStoreStatus'])->name('toggle-store-status');
+    
+    // Placeholder routes for navigation (we'll implement these later)
+    Route::get('/products', function() { return 'My Products - Coming Soon'; })->name('products');
+    Route::get('/orders', function() { return 'Seller Orders - Coming Soon'; })->name('orders');
+});
+
 require __DIR__.'/auth.php';

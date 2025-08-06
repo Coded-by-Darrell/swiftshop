@@ -3,6 +3,7 @@
 @section('title', 'My Account - Profile Information')
 
 @section('content')
+
 <div class="container account-container">
     <div class="row">
         <!-- Sidebar -->
@@ -34,6 +35,21 @@
                         <i class="fas fa-cog me-2"></i>
                         Account Settings
                     </a>
+                    @if(Auth::user()->isVendor())
+                        <div class="sidebar-divider"></div>
+                        <a href="{{ route('test.seller.overview') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Seller Overview
+                        </a>
+                        <a href="{{ route('test.seller.products') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-box me-2"></i>
+                            My Products
+                        </a>
+                        <a href="{{ route('test.seller.orders') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-shopping-bag me-2"></i>
+                            Seller Orders
+                        </a>
+                        @endif
                 </div>
             </div>
         </div>
@@ -127,14 +143,14 @@
                                 </div>
                             </div>
                             
-                            @if($user->role === 'customer' || !$user->role)
+                            {{-- @if($user->role === 'customer' || !$user->role)
                             <div class="apply-seller-section">
                                 <a href='#' class="btn btn-apply-seller">
                                     <i class="fas fa-store"></i>
                                     Apply as Seller
                                 </a>
                             </div>
-                            @endif
+                            @endif --}}
                         </div>
                     </div>
                 </div>

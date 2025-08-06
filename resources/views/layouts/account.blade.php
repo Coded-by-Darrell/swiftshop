@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ asset('css/browse.css') }}">
     <link rel="stylesheet" href="{{ asset('css/account.css') }}">
     <link rel="stylesheet" href="{{ asset('css/order-history.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/seller-dashboard.css') }}">
     @stack('styles')
 </head>
 <body>

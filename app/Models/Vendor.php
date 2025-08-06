@@ -46,4 +46,9 @@ class Vendor extends Model
     {
         return $this->approvedReviews()->count();
     }
+
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
 }

@@ -59,36 +59,52 @@ class User extends Authenticatable
     }
 
     public function addresses()
-{
-    return $this->hasMany(Address::class)->orderBy('is_default', 'desc')->orderBy('created_at', 'desc');
-}
+    {
+        return $this->hasMany(Address::class)->orderBy('is_default', 'desc')->orderBy('created_at', 'desc');
+    }
 
-public function getDefaultAddress()
-{
-    return $this->addresses()->where('is_default', true)->first();
-}
+    public function getDefaultAddress()
+    {
+        return $this->addresses()->where('is_default', true)->first();
+    }
 
-/**
- * Get the user's wishlist items
- */
-public function wishlistItems()
-{
-    return $this->hasMany(WishlistItem::class);
-}
+    /**
+     * Get the user's wishlist items
+     */
+    public function wishlistItems()
+    {
+        return $this->hasMany(WishlistItem::class);
+    }
 
-/**
- * Get the user's wishlist products
- */
-public function wishlistProducts()
-{
-    return $this->belongsToMany(Product::class, 'wishlist_items')->withTimestamps();
-}
+    /**
+     * Get the user's wishlist products
+     */
+    public function wishlistProducts()
+    {
+        return $this->belongsToMany(Product::class, 'wishlist_items')->withTimestamps();
+    }
 
-/**
- * Check if user has product in wishlist
- */
-public function hasInWishlist($productId)
-{
-    return $this->wishlistItems()->where('product_id', $productId)->exists();
-}
+    /**
+     * Check if user has product in wishlist
+     */
+    public function hasInWishlist($productId)
+    {
+        return $this->wishlistItems()->where('product_id', $productId)->exists();
+    }
+    
+    /**
+     * Get the vendor profile for this user
+     */
+    public function vendor()
+    {
+        return $this->hasOne(Vendor::class);
+    }
+    
+    /**
+     * Check if user is a vendor
+     */
+    public function isVendor()
+    {
+        return $this->vendor && $this->vendor->status === 'approved';
+    }
 }

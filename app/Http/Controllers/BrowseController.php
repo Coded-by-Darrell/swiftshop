@@ -25,7 +25,7 @@ class BrowseController extends Controller
             $userAccount = Auth::user() ?: null;
 
             // Get products for Special Deals (products with active discounts)
-            $specialDeals = Product::with(['vendor', 'category', 'defaultVariant.attributeValues'])
+            $specialDeals = Product::fromActiveStores()->with(['vendor', 'category', 'defaultVariant.attributeValues'])
                 ->whereHas('variants', function($q) {
                     $q->onSale();
                 })
@@ -47,7 +47,7 @@ class BrowseController extends Controller
                 });
 
             // Get products for New Releases (next 4 products)
-            $newReleases = Product::with(['vendor', 'category', 'defaultVariant.attributeValues'])
+            $newReleases = Product::fromActiveStores()->with(['vendor', 'category', 'defaultVariant.attributeValues'])
                 ->where('status', 'active')
                 ->offset(4)
                 ->limit(4)
@@ -67,7 +67,7 @@ class BrowseController extends Controller
                 });
 
             // Get Electronics products
-            $electronics = Product::with(['vendor', 'category', 'defaultVariant.attributeValues'])
+            $electronics = Product::fromActiveStores()->with(['vendor', 'category', 'defaultVariant.attributeValues'])
                 ->where('category_id', 1)
                 ->where('status', 'active')
                 ->limit(4)
@@ -87,7 +87,7 @@ class BrowseController extends Controller
                 });
 
             // Get Fashion products
-            $fashionProducts = Product::with(['vendor', 'category', 'defaultVariant.attributeValues'])
+            $fashionProducts = Product::fromActiveStores()->with(['vendor', 'category', 'defaultVariant.attributeValues'])
                 ->where('category_id', 2)
                 ->where('status', 'active')
                 ->limit(4)
@@ -127,7 +127,7 @@ class BrowseController extends Controller
                 });
 
             // Get Gaming products
-            $gamingProducts = Product::with(['vendor', 'category', 'defaultVariant.attributeValues'])
+            $gamingProducts = Product::fromActiveStores()->with(['vendor', 'category', 'defaultVariant.attributeValues'])
                 ->where('category_id', 4)
                 ->where('status', 'active')
                 ->limit(4)
@@ -147,7 +147,7 @@ class BrowseController extends Controller
                 });
 
             // Get Photography products
-            $photographyProducts = Product::with(['vendor', 'category', 'defaultVariant.attributeValues'])
+            $photographyProducts = Product::fromActiveStores()->with(['vendor', 'category', 'defaultVariant.attributeValues'])
                 ->where('category_id', 5)
                 ->where('status', 'active')
                 ->limit(4)
@@ -167,7 +167,7 @@ class BrowseController extends Controller
                 });
 
             // Get Audio products
-            $audioProducts = Product::with(['vendor', 'category', 'defaultVariant.attributeValues'])
+            $audioProducts = Product::fromActiveStores()->with(['vendor', 'category', 'defaultVariant.attributeValues'])
                 ->where('category_id', 6)
                 ->where('status', 'active')
                 ->limit(4)
@@ -213,7 +213,7 @@ public function category($categorySlug, Request $request)
                        ->firstOrFail();
     
     // Start building the query for products in this category
-    $query = Product::with(['vendor', 'category', 'defaultVariant.attributeValues'])
+    $query = Product::fromActiveStores()->with(['vendor', 'category', 'defaultVariant.attributeValues'])
         ->where('category_id', $category->id)
         ->where('status', 'active');
     
@@ -275,7 +275,7 @@ public function category($categorySlug, Request $request)
     $products = $query->paginate(12)->appends($request->query());
     
     // Get subcategories for this category (using product names for now since we don't have subcategories table)
-    $subcategories = Product::where('category_id', $category->id)
+    $subcategories = Product::fromActiveStores()->where('category_id', $category->id)
         ->where('status', 'active')
         ->pluck('name')
         ->map(function($name) {
@@ -298,7 +298,7 @@ public function category($categorySlug, Request $request)
         ->values();
     
     // Get unique brands from vendors in this category
-    $brands = Product::where('category_id', $category->id)
+    $brands = Product::fromActiveStores()->where('category_id', $category->id)
         ->where('status', 'active')
         ->with('vendor')
         ->get()
@@ -322,7 +322,7 @@ public function search(Request $request)
     $sortBy = $request->input('sort', 'name'); // default sort by name
 
     // Start building the query
-    $productsQuery = Product::with(['vendor', 'category', 'variants.attributeValues.attribute']);
+    $productsQuery = Product::fromActiveStores()->with(['vendor', 'category', 'variants.attributeValues.attribute']);
 
     // Search by name or description
     if ($query) {
