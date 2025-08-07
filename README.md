@@ -32,19 +32,7 @@ php artisan key:generate
 ```
 
 The .env file was configured with the following database settings:
-```env
-APP_NAME=SwiftShop
-APP_ENV=local
-APP_DEBUG=true
-APP_URL=http://localhost:8000
 
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3307
-DB_DATABASE=swiftshop
-DB_USERNAME=root
-DB_PASSWORD=
-```
 
 #### Step 3: Database Setup Challenges
 
