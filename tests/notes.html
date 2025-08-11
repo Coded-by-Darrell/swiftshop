@@ -1,6 +1,70 @@
 <!-- 
-from our previous chat, we did the address book section at the my account page.
+from our previous chat, we finish the seller overview tab.
 
-for now, let's set aside the assigned task for today, instead do the following below:
-1. 
+things to do this session:
+my products tab - which the vendor can search, add a new product, and filter[all products, active, inactive, out of stock]. You may use the ui ux pdf for the reference,
+copy the structure of the design. at the product card, please remove the sales and views. the eye btn is for the visibility of the product. The pencil is for edit. 
+change the btn 3 dots into trash, for deleting the products. if the display itmes are more than 10, use simple pagination.
+
+
+ avoid sending too much text, just be straight forward and detail. Dont send all the code at once,
+send it all one by one for easy debugging, wait for my command before sending another code. send the codes in artifacts.
+
+dont start the coding yet, ask me first what's unclear to you, and what files might you need. ill be hapy to provide you all the 
+files you need. also, you can suggest what to add or to remove. 
+
+also pls take note of this. if there will be additional codes to the existing file, just send the code that i have to add, got it?
+and be detail in the step by step how to implement the codes.
+
+
+
+once we are both on the same page, you could start the coding, lets start with the contruction of the blade and functions of the btns and etc. do the css when i say everything is working  
+pls always seperate the css and js.
  -->
+
+<!-- 
+
+1. yes, please see the attached files
+2. yes
+3. yes, i cant remember how it save, but analyze the files that attached first, then let me know if you find your answer, otherwise let me
+know your solution
+4. just a modal, for the requirements, use the table from the db as a reference to be filled. the logic after the user create a new product
+is there will be a new modal that will pop up and will say something like "new product successfully created. pls wait for admin's approval."
+i think i still dont have a db for pending products like this. then the approval will go to admin's dashboard. and the pending product will
+also display in my products tab, also pls add pending filter btn. if the product is pending, it should have any edit btn and etc.
+5. yes pls
+6.inline editing 
+
+ill also attach the pic of the tables in my db so incase that you need to see something in specific value in my db, just lmk.
+
+## Files I might need:
+- Current `SellerController.php` 
+- Product model (`app/Models/Product.php`)
+- Current seller overview blade file to see the structure
+- Any existing CSS files for seller dashboard
+- Database migration for products table (to understand the schema)
+
+## Suggestions:
+- **Search functionality**: Search by product name only
+
+dont do the rest on suggestion
+
+ -->
+
+
+
+ <!-- 
+continue tomorrow:
+1. the hide product is working but when you search it, the product still shows in search. For this, what you need? the blade or js of my search or something else?
+2. when creating a new item, there's an error: (let me know what do you need and want to see in this problem)
+Error creating product: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'status' at row 1 (Connection: mysql, SQL: insert into `products` (`vendor_id`, `category_id`, `name`, `description`, `price`, `stock_quantity`, `status`, `updated_at`, `created_at`) values (5, 1, Iphone 16 pro max, 55gb, 45000, 50, pending, 2025-08-07 10:01:44, 2025-08-07 10:01:44))
+3. the pic that i upload when using the edit feature is not syncing in the product cards and show.blade
+4. also, when uploading a picture, if the image size is bigger that the container of image preview that image flows, pls see the attached photo, fix it, it should
+auto fit at the container
+  -->
+
+ <!-- 
+add this below the  // Start building the query
+    $productsQuery = Product::fromActiveStores()->with(['vendor', 'category', '
+  $productsQuery->where('status', 'active');
+  -->

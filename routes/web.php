@@ -185,8 +185,16 @@ Route::prefix('test-seller')->name('test.seller.')->group(function () {
     Route::get('/overview', [App\Http\Controllers\SellerController::class, 'overview'])->name('overview');
     Route::post('/toggle-store-status', [App\Http\Controllers\SellerController::class, 'toggleStoreStatus'])->name('toggle-store-status');
     
-    // Placeholder routes for navigation (we'll implement these later)
-    Route::get('/products', function() { return 'My Products - Coming Soon'; })->name('products');
+    // Product management routes
+    Route::get('/products', [App\Http\Controllers\VendorProductController::class, 'index'])->name('products');
+    Route::get('/products/create', [App\Http\Controllers\VendorProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [App\Http\Controllers\VendorProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{id}/edit', [App\Http\Controllers\VendorProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{id}', [App\Http\Controllers\VendorProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{id}', [App\Http\Controllers\VendorProductController::class, 'destroy'])->name('products.destroy');
+    Route::post('/products/{id}/toggle-visibility', [App\Http\Controllers\VendorProductController::class, 'toggleVisibility'])->name('products.toggle-visibility');
+    
+    // Orders route (placeholder)
     Route::get('/orders', function() { return 'Seller Orders - Coming Soon'; })->name('orders');
 });
 
