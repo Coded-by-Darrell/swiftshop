@@ -195,7 +195,10 @@ Route::prefix('test-seller')->name('test.seller.')->group(function () {
     Route::post('/products/{id}/toggle-visibility', [App\Http\Controllers\VendorProductController::class, 'toggleVisibility'])->name('products.toggle-visibility');
     
     // Orders route (placeholder)
-    Route::get('/orders', function() { return 'Seller Orders - Coming Soon'; })->name('orders');
+    Route::get('/orders', [App\Http\Controllers\SellerController::class, 'orders'])->name('orders');
+    Route::get('/orders/search', [App\Http\Controllers\SellerController::class, 'searchOrders'])->name('orders.search');
+    Route::post('/orders/update-status/{orderItemId}', [App\Http\Controllers\SellerController::class, 'updateOrderStatus'])->name('orders.update-status');
+
 });
 
 require __DIR__.'/auth.php';

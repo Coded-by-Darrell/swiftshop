@@ -93,6 +93,20 @@ class OrderHistory {
                 this.showMarkReceivedModal(orderId);
             }
         });
+
+        // Leave Review buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.leave-review-btn')) {
+                const orderId = e.target.closest('.leave-review-btn').dataset.orderId;
+                this.showReviewNotification(orderId);
+            }
+        });
+    }
+
+    // Add this new method after the existing methods:
+    showReviewNotification(orderId) {
+        // Show a simple notification that review feature is coming soon
+        this.showSuccessMessage('Review feature coming soon! Thank you for your order.');
     }
 
     bindModalEvents() {

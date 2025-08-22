@@ -272,46 +272,60 @@ class AccountController extends Controller
         
         return view('account.order-details', compact('order'));
     }
-    /**
-     * Mark order as received (for delivered orders)
-     */
-    public function markAsReceived(Request $request, $orderId)
-    {
-        $user = Auth::user();
-        
-        $order = Order::where('user_id', $user->id)
-                     ->where('id', $orderId)
-                     ->where('status', 'delivered')
-                     ->firstOrFail();
-        
-        // You can add a 'received_at' column to orders table if needed
-        // For now, we'll just return a success response
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Order marked as received! Thank you for your confirmation.'
-        ]);
-    }
     
     /**
-     * Cancel order (only for pending/processing orders)
-     */
-    public function cancelOrder(Request $request, $orderId)
-    {
-        $user = Auth::user();
-        
-        $order = Order::where('user_id', $user->id)
-                     ->where('id', $orderId)
-                     ->whereIn('status', ['pending', 'processing'])
-                     ->firstOrFail();
-        
-        $order->update(['status' => 'cancelled']);
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Order cancelled successfully!'
-        ]);
-    }
+ * Updated markAsReceived method
+ */
+public function markAsReceived(Request $request, $orderId)
+{
+    $user = Auth::user();
+    
+    $order = Order::where('user_id', $user->id)
+                 ->where('id', $orderId)
+                 ->where('status', 'shipped')  // Changed from 'delivered' to 'shipped'
+                 ->firstOrFail();
+    
+    // Update all order items to delivered
+    $order->orderItems()->update([
+        'status' => 'delivered',
+        'delivered_at' => now()
+    ]);
+    
+    // Update main order status to delivered
+    $order->update([
+        'status' => 'delivered',
+        'delivered_at' => now()
+    ]);
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Order received! Thank you for confirming delivery.'
+    ]);
+}
+
+/**
+ * Updated cancelOrder method - only allow pending orders
+ */
+public function cancelOrder(Request $request, $orderId)
+{
+    $user = Auth::user();
+    
+    $order = Order::where('user_id', $user->id)
+                 ->where('id', $orderId)
+                 ->where('status', 'pending')  // Only pending orders can be cancelled
+                 ->firstOrFail();
+    
+    // Update all order items to cancelled
+    $order->orderItems()->update(['status' => 'cancelled']);
+    
+    // Update main order status
+    $order->update(['status' => 'cancelled']);
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Order cancelled successfully!'
+    ]);
+}
     
     /**
      * AJAX search for orders (separate endpoint for better organization)

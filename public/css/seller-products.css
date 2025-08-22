@@ -1,0 +1,821 @@
+/* Seller Products Styles - Following SwiftShop Design System */
+
+:root {
+    --primary-blue: #0C5CE6;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --dark-gray: #343a40;
+    --success-green: #28a745;
+    --warning-orange: #ffc107;
+    --danger-red: #dc3545;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* ===================================
+   PRODUCTS SEARCH SECTION
+   =================================== */
+.products-search-section .search-input-container {
+    position: relative;
+    max-width: 500px;
+}
+
+.products-search-section .search-input-container .search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    z-index: 3;
+}
+
+.products-search-section .form-control {
+    padding-right: 45px;
+    border: 1px solid #e3e6f0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.products-search-section .form-control:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.2rem rgba(12, 92, 230, 0.15);
+}
+
+.products-search-section .form-control::placeholder {
+    color: #adb5bd;
+    font-size: 0.9rem;
+}
+
+/* ===================================
+   FILTER PILLS SECTION
+   =================================== */
+.products-filter-section {
+    margin-bottom: 2rem;
+}
+
+.filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+}
+
+.filter-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border: 1px solid #e3e6f0;
+    border-radius: 25px;
+    background: var(--white);
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+.filter-pill:hover {
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    background: rgba(12, 92, 230, 0.05);
+    text-decoration: none;
+}
+
+.filter-pill.active {
+    background: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: var(--white);
+}
+
+.filter-pill .pill-count {
+    margin-left: 0.5rem;
+    background: rgba(108, 117, 125, 0.15);
+    border-radius: 12px;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.filter-pill.active .pill-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: var(--white);
+}
+
+/* ===================================
+   PRODUCT CARDS
+   =================================== */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.product-card {
+    background: var(--white);
+    border: 1px solid #e3e6f0;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.product-card:hover {
+    box-shadow: 0 4px 12px rgba(12, 92, 230, 0.1);
+    border-color: var(--primary-blue);
+    transform: translateY(-2px);
+}
+
+/* Product Image */
+.product-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background: #f8f9fa;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.no-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    color: #adb5bd;
+    font-size: 2rem;
+}
+
+/* Product Status Badge */
+.product-status-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
+}
+
+.status-active {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #a3cfbb;
+}
+
+.status-inactive {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-pending {
+    background: #cfe2ff;
+    color: #052c65;
+    border: 1px solid #9ec5fe;
+}
+
+.status-out-of-stock {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f1aeb5;
+}
+
+/* Product Details */
+.product-details {
+    padding: 1.25rem;
+}
+
+.product-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.product-category {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.product-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin-bottom: 0.75rem;
+}
+
+.product-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.stock-info {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.created-date {
+    font-size: 0.75rem;
+}
+
+/* Product Actions */
+.product-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.product-actions .btn {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    flex: 1;
+    min-width: auto;
+}
+
+.product-actions .btn i {
+    font-size: 0.75rem;
+}
+
+.visibility-btn {
+    background: transparent;
+    border: 1px solid #e3e6f0;
+    color: #6c757d;
+}
+
+.visibility-btn:hover:not(.disabled) {
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    background: rgba(12, 92, 230, 0.05);
+}
+
+.edit-btn {
+    background: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: var(--white);
+}
+
+.edit-btn:hover:not(.disabled) {
+    background: #0a4bc7;
+    border-color: #0a4bc7;
+}
+
+.delete-btn {
+    background: transparent;
+    border: 1px solid var(--danger-red);
+    color: var(--danger-red);
+}
+
+.delete-btn:hover:not(.disabled) {
+    background: var(--danger-red);
+    color: var(--white);
+}
+
+.product-actions .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===================================
+   EMPTY STATE
+   =================================== */
+.empty-products-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #6c757d;
+}
+
+.empty-products-state .empty-icon {
+    margin-bottom: 1.5rem;
+}
+
+.empty-products-state .empty-icon i {
+    font-size: 3rem;
+    opacity: 0.4;
+    color: #dee2e6;
+}
+
+.empty-products-state h5 {
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.empty-products-state p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    max-width: 400px;
+    margin: 0 auto 1.5rem;
+}
+
+.empty-products-state .btn {
+    font-size: 0.9rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+/* ===================================
+   ADD PRODUCT BUTTON
+   =================================== */
+#addProductBtn,
+#addFirstProductBtn {
+    background: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: var(--white);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+#addProductBtn:hover,
+#addFirstProductBtn:hover {
+    background: #0a4bc7;
+    border-color: #0a4bc7;
+    transform: translateY(-1px);
+}
+
+/* ===================================
+   LOADING STATE
+   =================================== */
+#productsListContainer.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+    min-height: 300px;
+}
+
+#productsListContainer.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--primary-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 10;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ===================================
+   MODAL STYLES
+   =================================== */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.25rem;
+    background: #fafbfc;
+}
+
+.modal-title {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.modal-body {
+    padding: 1.25rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1rem 1.25rem;
+    background: #fafbfc;
+}
+
+.modal-footer .btn {
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
+}
+
+/* Form Styling in Modals */
+.modal .form-label {
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.modal .form-control,
+.modal .form-select {
+    border: 1px solid #e3e6f0;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.modal .form-control:focus,
+.modal .form-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.2rem rgba(12, 92, 230, 0.15);
+}
+
+.modal .form-control.is-invalid {
+    border-color: var(--danger-red);
+}
+
+.modal .invalid-feedback {
+    font-size: 0.8rem;
+    color: var(--danger-red);
+}
+
+/* Image Preview Styles */
+.image-preview-container {
+    margin-top: 1rem;
+}
+
+.image-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.75rem;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    background: #f8f9fa;
+}
+
+.image-preview-item {
+    position: relative;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 0.25rem;
+    text-align: center;
+    background: var(--white);
+}
+
+.image-preview-item img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.image-name {
+    display: block;
+    font-size: 0.7rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    word-break: break-word;
+    line-height: 1.2;
+}
+
+/* Current Images in Edit Modal */
+.current-images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.current-image-item {
+    position: relative;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--white);
+}
+
+.current-image-item img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+}
+
+.btn-remove-image {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    background: var(--danger-red);
+    color: var(--white);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-remove-image:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+/* ===================================
+   TOAST NOTIFICATIONS
+   =================================== */
+.toast-notification {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: none;
+    font-size: 0.9rem;
+}
+
+.toast-notification .alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid var(--success-green);
+}
+
+.toast-notification .alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid var(--danger-red);
+}
+
+.toast-notification .alert-info {
+    background: #cfe2ff;
+    color: #052c65;
+    border-left: 4px solid #17a2b8;
+}
+
+/* ===================================
+   PAGINATION
+   =================================== */
+.pagination {
+    margin: 2rem 0 0 0;
+    justify-content: center;
+}
+
+.page-item {
+    margin: 0 2px;
+}
+
+.page-link {
+    color: var(--primary-blue);
+    border: 1px solid #e3e6f0;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    min-width: 40px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.page-link:hover:not(.disabled) {
+    background: rgba(12, 92, 230, 0.05);
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    text-decoration: none;
+}
+
+.page-item.active .page-link {
+    background: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: var(--white);
+}
+
+.page-item.disabled .page-link {
+    color: #adb5bd;
+    background: var(--white);
+    border-color: #e3e6f0;
+    cursor: not-allowed;
+}
+
+/* ===================================
+   RESPONSIVE STYLES
+   =================================== */
+
+/* Tablet Styles */
+@media (max-width: 992px) {
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.25rem;
+    }
+    
+    .products-search-section .search-input-container {
+        max-width: 100%;
+    }
+    
+    .filter-pills {
+        gap: 0.5rem;
+    }
+    
+    .filter-pill {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .product-details {
+        padding: 1rem;
+    }
+    
+    .product-actions .btn {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.6rem;
+    }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1rem;
+    }
+    
+    .product-image {
+        height: 160px;
+    }
+    
+    .product-details {
+        padding: 0.875rem;
+    }
+    
+    .product-name {
+        font-size: 0.95rem;
+    }
+    
+    .product-price {
+        font-size: 1rem;
+    }
+    
+    .filter-pills {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 0.5rem;
+        gap: 0.75rem;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .filter-pill {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+    
+    .empty-products-state {
+        padding: 2rem 1rem;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 1rem;
+    }
+    
+    .image-preview-grid,
+    .current-images-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 0.5rem;
+    }
+    
+    .image-preview-item img,
+    .current-image-item img {
+        height: 60px;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 576px) {
+    .products-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+    
+    .product-card {
+        border-radius: 8px;
+    }
+    
+    .product-image {
+        height: 140px;
+    }
+    
+    .product-details {
+        padding: 0.75rem;
+    }
+    
+    .product-name {
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .product-category {
+        font-size: 0.75rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .product-price {
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .product-meta {
+        font-size: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .product-actions {
+        gap: 0.25rem;
+    }
+    
+    .product-actions .btn {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.5rem;
+    }
+    
+    .filter-pills {
+        padding: 0 0.5rem 0.5rem;
+    }
+    
+    .no-image-placeholder {
+        font-size: 1.5rem;
+    }
+    
+    .product-status-badge {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.5rem;
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+}
+
+/* ===================================
+   UTILITIES
+   =================================== */
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Custom scrollbar for filter pills on mobile */
+.filter-pills::-webkit-scrollbar {
+    height: 4px;
+}
+
+.filter-pills::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 2px;
+}
+
+.filter-pills::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 2px;
+}
+
+.filter-pills::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

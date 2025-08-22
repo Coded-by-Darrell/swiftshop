@@ -89,7 +89,17 @@
                             <i class="fas fa-eye me-1"></i>View Details
                         </button>
                         
-                        @if($order->status === 'delivered')
+                        {{-- Cancel button: Only show for PENDING orders --}}
+                        @if($order->status === 'pending')
+                            <button type="button" 
+                                    class="btn btn-outline-danger btn-sm cancel-order-btn" 
+                                    data-order-id="{{ $order->id }}">
+                                <i class="fas fa-times me-1"></i>Cancel Order
+                            </button>
+                        @endif
+                        
+                        {{-- Mark as Received button: Only show for SHIPPED orders --}}
+                        @if($order->status === 'shipped')
                             <button type="button" 
                                     class="btn btn-success btn-sm mark-received-btn" 
                                     data-order-id="{{ $order->id }}">
@@ -97,11 +107,12 @@
                             </button>
                         @endif
                         
-                        @if(in_array($order->status, ['pending', 'processing']))
+                        {{-- Leave Review button: Only show for DELIVERED orders --}}
+                        @if($order->status === 'delivered')
                             <button type="button" 
-                                    class="btn btn-outline-danger btn-sm cancel-order-btn" 
+                                    class="btn btn-primary btn-sm leave-review-btn" 
                                     data-order-id="{{ $order->id }}">
-                                <i class="fas fa-times me-1"></i>Cancel Order
+                                <i class="fas fa-star me-1"></i>Leave Review
                             </button>
                         @endif
                     </div>
